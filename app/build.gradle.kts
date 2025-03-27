@@ -1,5 +1,6 @@
 plugins {
     alias(libs.plugins.android.application)
+    alias(libs.plugins.google.gms.google.services) // Đảm bảo plugin này được khai báo đúng
 }
 
 android {
@@ -32,10 +33,27 @@ android {
 }
 
 dependencies {
+    implementation(libs.glide)
+    implementation(platform("com.google.firebase:firebase-bom:32.7.0"))
+
+    // Firebase Services
+    implementation("com.google.firebase:firebase-analytics-ktx")
+    implementation("com.google.firebase:firebase-auth-ktx")
+    implementation("com.google.firebase:firebase-database-ktx")
+
+    // Networking
+    implementation(libs.retrofit)
+    implementation(libs.converter.gson)
+    implementation(libs.logging.interceptor)
+
+    // UI Components
+    implementation(libs.androidx.cardview)
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation(libs.activity)
     implementation(libs.constraintlayout)
+
+    // Testing
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)

@@ -6,9 +6,9 @@
         android:icon="@drawable/baseline_add_home_24"
         android:title="Home" />
     <item
-        android:id="@+id/menu_item_search"
+        android:id="@+id/menu_item_song"
         android:icon="@drawable/baseline_content_paste_search_24"
-        android:title="Search" />
+        android:title="Song" />
     <item
         android:id="@+id/menu_item_favourite"
         android:icon="@drawable/baseline_build_circle_24"
