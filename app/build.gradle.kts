@@ -34,6 +34,8 @@ android {
 
 dependencies {
     implementation(libs.glide)
+    implementation("com.tbuonomo:dotsindicator:4.3")
+
     implementation(platform("com.google.firebase:firebase-bom:32.7.0"))
 
     // Firebase Services
