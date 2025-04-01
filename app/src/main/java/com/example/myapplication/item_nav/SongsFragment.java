@@ -28,6 +28,8 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class SongsFragment extends Fragment {
     private static final String TAG = "SongsFragment";
@@ -71,6 +73,7 @@ public class SongsFragment extends Fragment {
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                     Song song = dataSnapshot.getValue(Song.class);
                     if (song != null) {
+                        song.setFileUrl(convertDriveUrlToStreamUrl(song.getFileUrl()));
                         songList.add(song);
                     }
                 }
@@ -115,5 +118,22 @@ public class SongsFragment extends Fragment {
             }
         }
         songAdapter.notifyDataSetChanged();
+    }
+
+    private String convertDriveUrlToStreamUrl(String driveUrl) {
+        if (driveUrl == null || driveUrl.isEmpty()) {
+            return driveUrl;
+        }
+
+        // Pattern để lấy ID từ link chia sẻ Google Drive
+        Pattern pattern = Pattern.compile("[-\\w]{25,}");
+        Matcher matcher = pattern.matcher(driveUrl);
+
+        if (matcher.find()) {
+            String fileId = matcher.group();
+            return "https://drive.google.com/uc?export=download&id=" + fileId;
+        }
+
+        return driveUrl; // Trả về URL gốc nếu không tìm thấy ID hợp lệ
     }
 }

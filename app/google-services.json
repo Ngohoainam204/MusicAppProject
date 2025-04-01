@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "999423835574",
+    "project_id": "musicplayerapp-aed33",
+    "storage_bucket": "musicplayerapp-aed33.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:999423835574:android:ae7b2bd27de6c2c4395517",
+        "android_client_info": {
+          "package_name": "com.example.myapplication"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBTHJHiDSOxb4NauWGIzs_YYaFUtpHjrkQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

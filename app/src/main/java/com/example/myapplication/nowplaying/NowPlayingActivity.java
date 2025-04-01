@@ -27,13 +27,19 @@ import com.example.myapplication.nowplaying.LyricsFragment;
 import java.util.concurrent.TimeUnit;
 
 public class NowPlayingActivity extends AppCompatActivity {
-    private TextView tvSongTitle, tvArtist, tvCurrentTime, tvDuration;
-    private ImageView imgCover, btnPlayPause, btnBack, btnLyric;
+    TextView tvSongTitle;
+    TextView tvArtist;
+    TextView tvCurrentTime;
+    TextView tvDuration;
+    ImageView imgCover;
+    private ImageView btnPlayPause;
+    private ImageView btnBack;
+    private ImageView btnLyric;
     private SeekBar seekBar;
-    private ExoPlayer exoPlayer;
-    private final Handler handler = new Handler();
-    private boolean isPlaying = false;
-    private boolean isSeeking = false; // Trạng thái tua
+    ExoPlayer exoPlayer;
+    final Handler handler = new Handler();
+    boolean isPlaying = false;
+    boolean isSeeking = false; // Trạng thái tua
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -122,7 +128,7 @@ public class NowPlayingActivity extends AppCompatActivity {
         });
     }
 
-    private void togglePlayPause() {
+    void togglePlayPause() {
         if (exoPlayer != null) {
             if (exoPlayer.isPlaying()) {
                 exoPlayer.pause();
