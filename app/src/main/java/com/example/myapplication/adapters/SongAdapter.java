@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -16,13 +17,13 @@ import com.example.myapplication.R;
 import com.example.myapplication.nowplaying.NowPlayingActivity;
 import com.example.myapplication.models.Song;
 
-
 import java.util.List;
 
 public class SongAdapter extends RecyclerView.Adapter<SongAdapter.SongViewHolder> {
 
     private final Context context;
     private final List<Song> songList;
+    private EditText etSearch;
 
     public SongAdapter(Context context, List<Song> songList) {
         this.context = context;
@@ -42,18 +43,23 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.SongViewHolder
         holder.tvTitle.setText(song.getTitle());
         holder.tvArtist.setText(song.getArtist());
         holder.tvDuration.setText(song.getDuration());
-        Glide.with(context).load(song.getCoverUrl()).into(holder.imgSong);
+
+        Glide.with(context)
+                .load(song.getCoverUrl())
+                .placeholder(R.drawable.ic_pause) // Ảnh tạm khi tải
+                .error(R.drawable.ic_pause) // Ảnh lỗi nếu tải thất bại
+                .centerCrop()
+                .into(holder.imgSong);
 
         holder.itemView.setOnClickListener(v -> {
             Intent intent = new Intent(context, NowPlayingActivity.class);
             intent.putExtra("song_title", song.getTitle());
             intent.putExtra("artist_name", song.getArtist());
             intent.putExtra("cover_url", song.getCoverUrl());
-            intent.putExtra("song_url", song.getFileUrl()); // URL bài hát
-            intent.putExtra("song_duration", song.getDuration()); // Thời lượng bài hát
+            intent.putExtra("song_url", song.getFileUrl());
+            intent.putExtra("song_duration", song.getDuration());
             context.startActivity(intent);
         });
-
     }
 
     @Override
@@ -62,7 +68,7 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.SongViewHolder
     }
 
     public static class SongViewHolder extends RecyclerView.ViewHolder {
-        TextView tvTitle, tvArtist,tvDuration;
+        TextView tvTitle, tvArtist, tvDuration;
         ImageView imgSong;
 
         public SongViewHolder(@NonNull View itemView) {
@@ -71,7 +77,6 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.SongViewHolder
             tvTitle = itemView.findViewById(R.id.tv_song_title);
             tvArtist = itemView.findViewById(R.id.tv_song_artist);
             imgSong = itemView.findViewById(R.id.img_song_cover);
-
         }
     }
 }

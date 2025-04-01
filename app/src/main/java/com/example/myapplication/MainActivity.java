@@ -1,12 +1,13 @@
 package com.example.myapplication;
 
 import android.os.Bundle;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import com.example.myapplication.item_nav.SongsFragment;
-import com.example.myapplication.item_nav.FavouriteFragment;
+import com.example.myapplication.item_nav.LibraryFragment;
 import com.example.myapplication.item_nav.HomeFragment;
 import com.example.myapplication.item_nav.SettingFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -36,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
                 } else if (item.getItemId() == R.id.menu_item_song) {
                     selectedFragment = new SongsFragment();
                 } else if (item.getItemId() == R.id.menu_item_favourite) {
-                    selectedFragment = new FavouriteFragment();
+                    selectedFragment = new LibraryFragment();
                 } else if (item.getItemId() == R.id.menu_item_setting) {
                     selectedFragment = new SettingFragment();
                 }

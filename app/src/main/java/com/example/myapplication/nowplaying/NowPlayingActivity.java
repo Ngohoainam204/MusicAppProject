@@ -1,36 +1,39 @@
 package com.example.myapplication.nowplaying;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.content.Intent;
-import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.OptIn;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.media3.common.util.UnstableApi;
+import androidx.media3.exoplayer.ExoPlayer;
+import androidx.media3.common.MediaItem;
+import androidx.media3.exoplayer.DefaultLoadControl;
 
 import com.bumptech.glide.Glide;
 import com.example.myapplication.R;
+import com.example.myapplication.nowplaying.LyricsFragment;
 
-import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 public class NowPlayingActivity extends AppCompatActivity {
-
     private TextView tvSongTitle, tvArtist, tvCurrentTime, tvDuration;
-    private ImageView imgCover, btnPlayPause, btnBack;
+    private ImageView imgCover, btnPlayPause, btnBack, btnLyric;
     private SeekBar seekBar;
-    private static MediaPlayer mediaPlayer;
-    private Handler handler = new Handler();
-    private String songUrl;
+    private ExoPlayer exoPlayer;
+    private final Handler handler = new Handler();
     private boolean isPlaying = false;
-    private int lastPosition = 0;
-    private boolean isNewMediaPlayer = false; // Kiểm tra xem MediaPlayer có phải là mới không
+    private boolean isSeeking = false; // Trạng thái tua
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,112 +48,86 @@ public class NowPlayingActivity extends AppCompatActivity {
         btnBack = findViewById(R.id.btnBack);
         tvCurrentTime = findViewById(R.id.tvCurrentTime);
         tvDuration = findViewById(R.id.tvDuration);
+        btnLyric = findViewById(R.id.btnLyric);
 
         Intent intent = getIntent();
         if (intent != null) {
             String title = intent.getStringExtra("song_title");
             String artist = intent.getStringExtra("artist_name");
             String coverUrl = intent.getStringExtra("cover_url");
-            songUrl = intent.getStringExtra("song_url");
+            String songUrl = intent.getStringExtra("song_url");
 
             tvSongTitle.setText(title);
             tvArtist.setText(artist);
             Glide.with(this).load(coverUrl).into(imgCover);
-        }
-
-        // Lấy vị trí nhạc từ SharedPreferences
-        lastPosition = getSharedPreferences("MusicPrefs", Context.MODE_PRIVATE).getInt("last_position", 0);
-
-        // Nếu MediaPlayer chưa tồn tại, tạo mới
-        if (mediaPlayer == null) {
-            isNewMediaPlayer = true;
-            playSong(songUrl);
-        } else {
-            resumeSong();
+            initializePlayer(songUrl);
         }
 
         btnPlayPause.setOnClickListener(v -> togglePlayPause());
-
-        btnBack.setOnClickListener(v -> {
-            saveCurrentPosition();
-            finish();
-        });
+        btnBack.setOnClickListener(v -> finish());
+        btnLyric.setOnClickListener(v -> openLyricsFragment());
 
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                if (fromUser && mediaPlayer != null) {
-                    mediaPlayer.seekTo(progress);
+                if (fromUser && exoPlayer != null) {
+                    isSeeking = true; // Bắt đầu tua
                     tvCurrentTime.setText(formatTime(progress));
                 }
             }
 
             @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {}
+            public void onStartTrackingTouch(SeekBar seekBar) {
+                isSeeking = true;
+            }
 
             @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {}
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                if (exoPlayer != null) {
+                    exoPlayer.seekTo(seekBar.getProgress());
+                    isSeeking = false; // Kết thúc tua
+                }
+            }
         });
     }
 
-    private void playSong(String url) {
+    @OptIn(markerClass = UnstableApi.class)
+    private void initializePlayer(String url) {
         if (url == null || url.isEmpty()) {
             Toast.makeText(this, "URL không hợp lệ!", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        if (mediaPlayer != null) {
-            mediaPlayer.release();
-        }
-
-        mediaPlayer = new MediaPlayer();
-        try {
-            mediaPlayer.setDataSource(this, Uri.parse(url));
-            mediaPlayer.prepareAsync();
-            mediaPlayer.setOnPreparedListener(mp -> {
-                seekBar.setMax(mp.getDuration());
-                tvDuration.setText(formatTime(mp.getDuration()));
-
-                // Nếu là MediaPlayer mới, bắt đầu từ đầu
-                if (isNewMediaPlayer) {
-                    mp.start();
-                    isPlaying = true;
-                    btnPlayPause.setImageResource(R.drawable.ic_pause);
-                    updateSeekBar();
-                } else {
-                    mp.seekTo(lastPosition);
-                }
-                Toast.makeText(this, "Đang phát nhạc...", Toast.LENGTH_SHORT).show();
-            });
-
-            mediaPlayer.setOnErrorListener((mp, what, extra) -> {
-                Toast.makeText(this, "Lỗi phát nhạc!", Toast.LENGTH_SHORT).show();
-                return true;
-            });
-
-        } catch (IOException e) {
-            Toast.makeText(this, "Không thể phát nhạc!", Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    private void resumeSong() {
-        mediaPlayer.start();
-        mediaPlayer.seekTo(lastPosition);
-        isPlaying = true;
+        exoPlayer = new ExoPlayer.Builder(this).setLoadControl(new DefaultLoadControl()).build();
+        exoPlayer.setMediaItem(MediaItem.fromUri(Uri.parse(url)));
+        exoPlayer.prepare();
+        exoPlayer.setPlayWhenReady(true);
         btnPlayPause.setImageResource(R.drawable.ic_pause);
-        updateSeekBar();
+
+        exoPlayer.addListener(new androidx.media3.common.Player.Listener() {
+            @Override
+            public void onIsPlayingChanged(boolean isPlayingNow) {
+                isPlaying = isPlayingNow;
+                btnPlayPause.setImageResource(isPlayingNow ? R.drawable.ic_pause : R.drawable.ic_play);
+            }
+
+            @Override
+            public void onPlaybackStateChanged(int state) {
+                if (state == ExoPlayer.STATE_READY) {
+                    seekBar.setMax((int) exoPlayer.getDuration());
+                    tvDuration.setText(formatTime((int) exoPlayer.getDuration()));
+                    updateSeekBar();
+                }
+            }
+        });
     }
 
     private void togglePlayPause() {
-        if (mediaPlayer != null) {
-            if (mediaPlayer.isPlaying()) {
-                mediaPlayer.pause();
-                isPlaying = false;
-                btnPlayPause.setImageResource(R.drawable.ic_play);
+        if (exoPlayer != null) {
+            if (exoPlayer.isPlaying()) {
+                exoPlayer.pause();
             } else {
-                mediaPlayer.start();
-                isPlaying = true;
-                btnPlayPause.setImageResource(R.drawable.ic_pause);
+                exoPlayer.play();
             }
         }
     }
@@ -159,34 +136,51 @@ public class NowPlayingActivity extends AppCompatActivity {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                if (mediaPlayer != null) {
-                    seekBar.setProgress(mediaPlayer.getCurrentPosition());
-                    tvCurrentTime.setText(formatTime(mediaPlayer.getCurrentPosition()));
-                    handler.postDelayed(this, 500);
+                if (exoPlayer != null && !isSeeking) {
+                    seekBar.setProgress((int) exoPlayer.getCurrentPosition());
+                    tvCurrentTime.setText(formatTime((int) exoPlayer.getCurrentPosition()));
                 }
+                handler.postDelayed(this, 100); // Giảm độ trễ xuống 100ms
             }
-        }, 500);
+        }, 100);
     }
 
     @SuppressLint("DefaultLocale")
     private String formatTime(int millis) {
-        return String.format("%02d:%02d",
-                TimeUnit.MILLISECONDS.toMinutes(millis),
-                TimeUnit.MILLISECONDS.toSeconds(millis) % 60);
+        return String.format("%02d:%02d", TimeUnit.MILLISECONDS.toMinutes(millis), TimeUnit.MILLISECONDS.toSeconds(millis) % 60);
     }
 
-    private void saveCurrentPosition() {
-        if (mediaPlayer != null) {
-            getSharedPreferences("MusicPrefs", Context.MODE_PRIVATE)
-                    .edit()
-                    .putInt("last_position", mediaPlayer.getCurrentPosition())
-                    .apply();
+    private void openLyricsFragment() {
+        findViewById(R.id.fragment_container).setVisibility(View.VISIBLE);
+
+        LyricsFragment lyricsFragment = new LyricsFragment();
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+
+        // Áp dụng hiệu ứng trượt từ dưới lên
+        transaction.setCustomAnimations(R.anim.slide_in_up, R.anim.slide_out_down, R.anim.slide_in_up, R.anim.slide_out_down);
+
+        transaction.replace(R.id.fragment_container, lyricsFragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
+            findViewById(R.id.fragment_container).setVisibility(View.GONE);
+            getSupportFragmentManager().popBackStack();
+        } else {
+            super.onBackPressed();
         }
     }
 
     @Override
     protected void onDestroy() {
-        saveCurrentPosition();
+        if (exoPlayer != null) {
+            exoPlayer.release();
+            exoPlayer = null;
+        }
         super.onDestroy();
     }
 }

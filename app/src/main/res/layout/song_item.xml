@@ -38,7 +38,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Song Title"
-                android:textColor="@android:color/white"
+                android:textColor="@color/black"
                 android:textSize="16sp"
                 android:textStyle="bold"
                 android:maxLines="1"
@@ -49,21 +49,32 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Artist"
-                android:textColor="#B3B3B3"
+                android:textColor="@color/black"
                 android:textSize="14sp"
                 android:maxLines="1"
                 android:ellipsize="end" />
         </LinearLayout>
 
         <!-- Thời lượng -->
+
+        <!-- Nút yêu thích -->
         <TextView
             android:id="@+id/tv_song_duration"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
             android:text="0:00"
-            android:textColor="#B3B3B3"
-            android:textSize="14sp"
-            android:layout_marginEnd="8dp" />
+            android:textColor="@color/black"
+            android:textSize="14sp" />
+
+        <ImageView
+            android:id="@+id/img_favorite"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/ic_heart_selection"
+            android:layout_marginEnd="8dp"
+            app:tint="#B3B3B3" />
+
     </LinearLayout>
 
 </androidx.cardview.widget.CardView>

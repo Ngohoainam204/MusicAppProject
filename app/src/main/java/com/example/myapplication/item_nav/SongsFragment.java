@@ -1,10 +1,14 @@
 package com.example.myapplication.item_nav;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -28,7 +32,8 @@ import java.util.List;
 public class SongsFragment extends Fragment {
     private static final String TAG = "SongsFragment";
     private RecyclerView recyclerView;
-    private List<Song> songList;
+    private EditText etSearch;
+    private List<Song> songList, filteredList;
     private SongAdapter songAdapter;
     private DatabaseReference databaseReference;
 
@@ -40,6 +45,8 @@ public class SongsFragment extends Fragment {
         Log.d(TAG, "onCreateView: Bắt đầu khởi tạo Fragment");
 
         recyclerView = view.findViewById(R.id.recycler_view_songs);
+        etSearch = view.findViewById(R.id.et_search);
+
         if (recyclerView == null) {
             Log.e(TAG, "onCreateView: RecyclerView không tìm thấy!");
             Toast.makeText(getContext(), "RecyclerView không tìm thấy!", Toast.LENGTH_SHORT).show();
@@ -48,10 +55,10 @@ public class SongsFragment extends Fragment {
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         songList = new ArrayList<>();
-        songAdapter = new SongAdapter(getContext(), songList);
+        filteredList = new ArrayList<>();
+        songAdapter = new SongAdapter(getContext(), filteredList);
         recyclerView.setAdapter(songAdapter);
 
-        // Lấy dữ liệu từ Firebase
         databaseReference = FirebaseDatabase.getInstance("https://musicplayerapp-aed33-default-rtdb.asia-southeast1.firebasedatabase.app")
                 .getReference("songs");
 
@@ -67,7 +74,7 @@ public class SongsFragment extends Fragment {
                         songList.add(song);
                     }
                 }
-                songAdapter.notifyDataSetChanged();
+                filterSongs("");
             }
 
             @Override
@@ -76,7 +83,37 @@ public class SongsFragment extends Fragment {
             }
         });
 
+        etSearch.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                filterSongs(s.toString());
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        });
 
         return view;
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    private void filterSongs(String query) {
+        filteredList.clear();
+        if (query.isEmpty()) {
+            filteredList.addAll(songList);
+        } else {
+            for (Song song : songList) {
+                if (song.getTitle().toLowerCase().contains(query.toLowerCase()) ||
+                        song.getArtist().toLowerCase().contains(query.toLowerCase())) {
+                    filteredList.add(song);
+                }
+            }
+        }
+        songAdapter.notifyDataSetChanged();
     }
 }

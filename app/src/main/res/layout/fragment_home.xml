@@ -1,5 +1,4 @@
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -30,15 +29,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:elevation="2dp"
         android:background="@android:color/transparent">
-
-        <Button
-            android:id="@+id/btnSearch"
-            android:layout_width="40dp"
-            android:layout_height="33dp"
-            android:background="@drawable/ic_search"
-            android:drawableStart="@drawable/ic_search"
-            android:contentDescription="Search Songs" />
-
 
         <View
             android:layout_width="0dp"

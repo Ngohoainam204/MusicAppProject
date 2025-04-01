@@ -1,4 +1,3 @@
-<!-- fragment_now_playing.xml -->
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -33,29 +32,44 @@
 
     <!-- Album Art -->
 
-    <!-- Song Title -->
+    <!-- Song Title và Favorite Icon -->
     <ImageView
         android:id="@+id/imgCover"
-        android:layout_width="300dp"
-        android:layout_height="300dp"
+        android:layout_width="317dp"
+        android:layout_height="340dp"
+        android:layout_marginTop="24dp"
         android:scaleType="fitXY"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.518"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tvNowPlaying" />
+
+    <!-- Artist Name -->
 
     <TextView
         android:id="@+id/tvSongTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
         android:text="Song Title"
         android:textSize="20sp"
         android:textStyle="bold"
-        app:layout_constraintTop_toBottomOf="@id/imgCover"
+        app:layout_constraintEnd_toStartOf="@id/btnFavorite"
+        app:layout_constraintHorizontal_bias="0.572"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/imgCover" />
 
-    <!-- Artist Name -->
+    <ImageView
+        android:id="@+id/btnFavorite"
+        android:layout_width="28dp"
+        android:layout_height="28dp"
+        android:layout_marginTop="20dp"
+        android:contentDescription="Favorite"
+        android:src="@drawable/ic_heart_selection"
+        app:layout_constraintBottom_toBottomOf="@id/tvSongTitle"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/imgCover"
+        app:layout_constraintVertical_bias="0.0" />
+
     <TextView
         android:id="@+id/tvArtistName"
         android:layout_width="wrap_content"
@@ -70,21 +84,21 @@
     <!-- Seek Bar -->
     <SeekBar
         android:id="@+id/seekBar"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_width="358dp"
+        android:layout_height="33dp"
         android:max="100"
-        app:layout_constraintTop_toBottomOf="@id/tvArtistName"
-        app:layout_constraintStart_toStartOf="parent"
+        android:padding="16dp"
         app:layout_constraintEnd_toEndOf="parent"
-        android:padding="16dp" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvArtistName" />
 
     <!-- Play Controls -->
 
     <LinearLayout
         android:id="@+id/linearLayout"
-        android:layout_width="217dp"
+        android:layout_width="215dp"
         android:layout_height="96dp"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="24dp"
         android:orientation="horizontal"
         android:padding="16dp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -131,9 +145,9 @@
 
     <ImageView
         android:id="@+id/btnLyric"
-        android:layout_width="47dp"
+        android:layout_width="38dp"
         android:layout_height="30dp"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="28dp"
         android:src="@drawable/ic_lyrics"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -144,11 +158,23 @@
         android:id="@+id/tvLyricsContent"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="21dp"
         android:text="Lyrics"
+        android:textSize="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnLyric" />
+        app:layout_constraintTop_toBottomOf="@+id/btnLyric"
+        app:layout_constraintVertical_bias="1.0" />
+
+    <FrameLayout
+        android:id="@+id/fragment_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

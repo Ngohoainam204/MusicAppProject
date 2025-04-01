@@ -1,11 +1,9 @@
 <!-- fragment_lyrics.xml -->
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    >
+    android:layout_height="match_parent">
 
     <!-- Background Image -->
     <ImageView
@@ -13,8 +11,18 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="centerCrop"
-        android:alpha="0.3"
-         />
+        android:alpha="0.3" />
+
+    <!-- Song Cover -->
+    <ImageView
+        android:id="@+id/imvCover"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:layout_marginTop="20dp"
+        android:scaleType="centerCrop"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <!-- Song Title -->
     <TextView
@@ -25,17 +33,17 @@
         android:textSize="24sp"
         android:textStyle="bold"
         android:textColor="@android:color/white"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/imvCover"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:paddingTop="20dp" />
+        android:paddingTop="10dp" />
 
     <!-- Lyrics Content -->
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintTop_toBottomOf="@id/tvLyricsSongTitle"
-        app:layout_constraintBottom_toBottomOf="parent">
+        app:layout_constraintBottom_toTopOf="@id/seekBar">
 
         <TextView
             android:id="@+id/tvLyricsContent"
@@ -43,8 +51,50 @@
             android:layout_height="wrap_content"
             android:text="[Verse 1]\nSample lyrics go here...\n[Chorus]\nMore lyrics..."
             android:textSize="18sp"
-            android:textColor="@android:color/white"
+            android:textColor="@color/black"
             android:padding="16dp" />
     </ScrollView>
+
+    <!-- Seek Bar -->
+    <SeekBar
+        android:id="@+id/seekBar"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:max="100"
+        android:layout_marginBottom="20dp"
+        app:layout_constraintBottom_toTopOf="@id/playerControls"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- Player Controls -->
+    <LinearLayout
+        android:id="@+id/playerControls"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <ImageView
+            android:id="@+id/btnPrevious"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:src="@drawable/ic_previous" />
+
+        <ImageView
+            android:id="@+id/btnPlayPause"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:src="@drawable/ic_play" />
+
+        <ImageView
+            android:id="@+id/btnNext"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:src="@drawable/ic_next" />
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
