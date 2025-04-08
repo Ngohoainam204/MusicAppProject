@@ -58,9 +58,12 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.SongViewHolder
             intent.putExtra("cover_url", song.getCoverUrl());
             intent.putExtra("song_url", song.getFileUrl());
             intent.putExtra("song_duration", song.getDuration());
+            intent.putExtra("song_lyrics", song.getLyrics()); // Thêm lyrics vào Intent
+            intent.putExtra("song_id", song.getSongId());
             context.startActivity(intent);
         });
     }
+
 
     @Override
     public int getItemCount() {

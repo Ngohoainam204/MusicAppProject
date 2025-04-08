@@ -44,16 +44,8 @@ public class SongsFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_songs, container, false);
 
-        Log.d(TAG, "onCreateView: Bắt đầu khởi tạo Fragment");
-
         recyclerView = view.findViewById(R.id.recycler_view_songs);
         etSearch = view.findViewById(R.id.et_search);
-
-        if (recyclerView == null) {
-            Log.e(TAG, "onCreateView: RecyclerView không tìm thấy!");
-            Toast.makeText(getContext(), "RecyclerView không tìm thấy!", Toast.LENGTH_SHORT).show();
-            return view;
-        }
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         songList = new ArrayList<>();
@@ -62,29 +54,9 @@ public class SongsFragment extends Fragment {
         recyclerView.setAdapter(songAdapter);
 
         databaseReference = FirebaseDatabase.getInstance("https://musicplayerapp-aed33-default-rtdb.asia-southeast1.firebasedatabase.app")
-                .getReference("songs");
+                .getReference("music_library");
 
-        Log.d(TAG, "onCreateView: Đọc dữ liệu từ Firebase");
-
-        databaseReference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                songList.clear();
-                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                    Song song = dataSnapshot.getValue(Song.class);
-                    if (song != null) {
-                        song.setFileUrl(convertDriveUrlToStreamUrl(song.getFileUrl()));
-                        songList.add(song);
-                    }
-                }
-                filterSongs("");
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Log.e(TAG, "Lỗi tải danh sách bài hát: " + error.getMessage());
-            }
-        });
+        loadSongs();
 
         etSearch.addTextChangedListener(new TextWatcher() {
             @Override
@@ -104,15 +76,40 @@ public class SongsFragment extends Fragment {
         return view;
     }
 
+    private void loadSongs() {
+        databaseReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                songList.clear();
+                for (DataSnapshot songSnapshot : snapshot.getChildren()) {
+                    DataSnapshot metadataSnapshot = songSnapshot.child("metadata");
+                    Song song = metadataSnapshot.getValue(Song.class);
+                    if (song != null) {
+                        song.setSongId(songSnapshot.getKey());
+                        song.setFileUrl(convertDriveUrl(song.getFileUrl()));
+                        songList.add(song);
+                    }
+                }
+                filterSongs("");
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(getContext(), "Error loading songs", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
     @SuppressLint("NotifyDataSetChanged")
     private void filterSongs(String query) {
         filteredList.clear();
         if (query.isEmpty()) {
             filteredList.addAll(songList);
         } else {
+            String lowerQuery = query.toLowerCase();
             for (Song song : songList) {
-                if (song.getTitle().toLowerCase().contains(query.toLowerCase()) ||
-                        song.getArtist().toLowerCase().contains(query.toLowerCase())) {
+                if (song.getTitle().toLowerCase().contains(lowerQuery) ||
+                        song.getArtist().toLowerCase().contains(lowerQuery)) {
                     filteredList.add(song);
                 }
             }
@@ -120,20 +117,10 @@ public class SongsFragment extends Fragment {
         songAdapter.notifyDataSetChanged();
     }
 
-    private String convertDriveUrlToStreamUrl(String driveUrl) {
-        if (driveUrl == null || driveUrl.isEmpty()) {
-            return driveUrl;
-        }
-
-        // Pattern để lấy ID từ link chia sẻ Google Drive
+    private String convertDriveUrl(String url) {
+        if (url == null) return url;
         Pattern pattern = Pattern.compile("[-\\w]{25,}");
-        Matcher matcher = pattern.matcher(driveUrl);
-
-        if (matcher.find()) {
-            String fileId = matcher.group();
-            return "https://drive.google.com/uc?export=download&id=" + fileId;
-        }
-
-        return driveUrl; // Trả về URL gốc nếu không tìm thấy ID hợp lệ
+        Matcher matcher = pattern.matcher(url);
+        return matcher.find() ? "https://drive.google.com/uc?export=download&id=" + matcher.group() : url;
     }
 }

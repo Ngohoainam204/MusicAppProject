@@ -22,7 +22,7 @@ import androidx.media3.exoplayer.DefaultLoadControl;
 
 import com.bumptech.glide.Glide;
 import com.example.myapplication.R;
-import com.example.myapplication.nowplaying.LyricsFragment;
+
 
 import java.util.concurrent.TimeUnit;
 
@@ -39,7 +39,10 @@ public class NowPlayingActivity extends AppCompatActivity {
     ExoPlayer exoPlayer;
     final Handler handler = new Handler();
     boolean isPlaying = false;
-    boolean isSeeking = false; // Trạng thái tua
+    boolean isSeeking = false;
+    String currentSongId;
+
+    String SongLyrics;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +65,8 @@ public class NowPlayingActivity extends AppCompatActivity {
             String artist = intent.getStringExtra("artist_name");
             String coverUrl = intent.getStringExtra("cover_url");
             String songUrl = intent.getStringExtra("song_url");
+            currentSongId = intent.getStringExtra("song_id");
+            SongLyrics = intent.getStringExtra("song_lyrics");
 
             tvSongTitle.setText(title);
             tvArtist.setText(artist);
@@ -71,13 +76,19 @@ public class NowPlayingActivity extends AppCompatActivity {
 
         btnPlayPause.setOnClickListener(v -> togglePlayPause());
         btnBack.setOnClickListener(v -> finish());
-        btnLyric.setOnClickListener(v -> openLyricsFragment());
+        btnLyric.setOnClickListener(v -> {
+            if (currentSongId == null || currentSongId.isEmpty()) {
+                Toast.makeText(NowPlayingActivity.this, "Song ID không hợp lệ!", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            openLyricsFragment();
+        });
 
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 if (fromUser && exoPlayer != null) {
-                    isSeeking = true; // Bắt đầu tua
+                    isSeeking = true;
                     tvCurrentTime.setText(formatTime(progress));
                 }
             }
@@ -91,7 +102,7 @@ public class NowPlayingActivity extends AppCompatActivity {
             public void onStopTrackingTouch(SeekBar seekBar) {
                 if (exoPlayer != null) {
                     exoPlayer.seekTo(seekBar.getProgress());
-                    isSeeking = false; // Kết thúc tua
+                    isSeeking = false;
                 }
             }
         });
@@ -146,7 +157,7 @@ public class NowPlayingActivity extends AppCompatActivity {
                     seekBar.setProgress((int) exoPlayer.getCurrentPosition());
                     tvCurrentTime.setText(formatTime((int) exoPlayer.getCurrentPosition()));
                 }
-                handler.postDelayed(this, 100); // Giảm độ trễ xuống 100ms
+                handler.postDelayed(this, 100);
             }
         }, 100);
     }
@@ -160,12 +171,13 @@ public class NowPlayingActivity extends AppCompatActivity {
         findViewById(R.id.fragment_container).setVisibility(View.VISIBLE);
 
         LyricsFragment lyricsFragment = new LyricsFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString("song_lyrics", SongLyrics); // Truyền lyrics vào Bundle
+        lyricsFragment.setArguments(bundle);
+
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
-
-        // Áp dụng hiệu ứng trượt từ dưới lên
         transaction.setCustomAnimations(R.anim.slide_in_up, R.anim.slide_out_down, R.anim.slide_in_up, R.anim.slide_out_down);
-
         transaction.replace(R.id.fragment_container, lyricsFragment);
         transaction.addToBackStack(null);
         transaction.commit();
@@ -190,3 +202,4 @@ public class NowPlayingActivity extends AppCompatActivity {
         super.onDestroy();
     }
 }
+

@@ -1,81 +1,155 @@
 {
-  "songs": {
+  "music_library": {
     "song_1": {
-      "artist": "TungDuong",
-      "coverUrl": "https://drive.google.com/uc?export=download&id=1l3dkQcjzp8AH5L75X-KxGjEW_dWpNuAM",
-      "duration": "4:00",
-      "fileUrl": "https://drive.google.com/uc?export=download&id=1Rhw7_MG_ocVS89tYIFe_VTb9GC04rDiR",
-      "title": "Tái sinh"
+      "metadata": {
+        "artist": "Tùng Dương",
+        "coverUrl": "https://drive.google.com/uc?export=download&id=1l3dkQcjzp8AH5L75X-KxGjEW_dWpNuAM",
+        "duration": "4:00",
+        "fileUrl": "https://drive.google.com/uc?export=download&id=1Rhw7_MG_ocVS89tYIFe_VTb9GC04rDiR",
+        "title": "Tái sinh",
+        "songId": "song_1",
+        "lyrics": "Em như giọt nắng dịu êm...\nTôi tìm thấy mình trong tiếng đàn mưa..."
+      }
     },
     "song_2": {
-      "artist": "SS501",
-      "coverUrl": "https://drive.google.com/uc?export=download&id=1zRu2peIdEqdYBWedx8pPz1fERivIWSq_",
-      "duration": "3:12",
-      "fileUrl": "https://drive.google.com/uc?export=download&id=1tikNN1nNO06mlsPFGtAmAUWiBycKUXHI",
-      "title": "Making A Lover"
+      "metadata": {
+        "artist": "SS501",
+        "coverUrl": "https://drive.google.com/uc?export=download&id=1zRu2peIdEqdYBWedx8pPz1fERivIWSq_",
+        "duration": "3:12",
+        "fileUrl": "https://drive.google.com/uc?export=download&id=1tikNN1nNO06mlsPFGtAmAUWiBycKUXHI",
+        "title": "Making A Lover",
+        "songId": "song_2",
+        "lyrics": "Neon biche hanbeon majuchyeo...\nNaege meomchwojun geudae..."
+      }
     },
     "song_3": {
-      "artist": "ThanhDat",
-      "coverUrl": "https://drive.google.com/uc?export=download&id=1BZt8xDLtnhNvooi8T_yxGKCPaF4hn4ZJ",
-      "duration": "6:02",
-      "fileUrl": "https://drive.google.com/uc?export=download&id=1XJ1lCOTfCv1AFxs-eqz3HMZXX5T_3O3j",
-      "title": "Ngày mai người ta lấy chồng"
+      "metadata": {
+        "artist": "ThanhDat",
+        "coverUrl": "https://drive.google.com/uc?export=download&id=1BZt8xDLtnhNvooi8T_yxGKCPaF4hn4ZJ",
+        "duration": "6:02",
+        "fileUrl": "https://drive.google.com/uc?export=download&id=1XJ1lCOTfCv1AFxs-eqz3HMZXX5T_3O3j",
+        "title": "Ngày mai người ta lấy chồng",
+        "songId": "song_3",
+        "lyrics": "Ngày mai người ta lấy chồng...\nMình tôi lang thang trong cơn mưa dài..."
+      }
     },
     "song_4": {
-      "artist": "DuongDomic",
-      "coverUrl": "https://drive.google.com/uc?export=download&id=1eDgFcg-MTvxbR8EGYVc0pOnI77wcweo8",
-      "duration": "3:28",
-      "fileUrl": "https://drive.google.com/uc?export=download&id=18xJMAf4SaE7Eymnwg3c99H979Pyyvi9N",
-      "title": "Mất kết nối"
+      "metadata": {
+        "artist": "DuongDomic",
+        "coverUrl": "https://drive.google.com/uc?export=download&id=1eDgFcg-MTvxbR8EGYVc0pOnI77wcweo8",
+        "duration": "3:28",
+        "fileUrl": "https://drive.google.com/uc?export=download&id=18xJMAf4SaE7Eymnwg3c99H979Pyyvi9N",
+        "title": "Mất kết nối",
+        "songId": "song_4",
+        "lyrics": "Từng giây từng phút bên em...\nGiờ chỉ là ký ức xa xăm..."
+      }
     },
     "song_5": {
-      "artist": "LamTuan",
-      "coverUrl": "https://drive.google.com/uc?export=download&id=13x2OPy4IYC95gIuReK6xjAzw3SmCsQ65",
-      "duration": "5:59",
-      "fileUrl": "https://drive.google.com/uc?export=download&id=1ZmgoXT4DKOiRvOUuO6ILHftwtSw7p1oh",
-      "title": "Hứa nhưng chẳng tới"
+      "metadata": {
+        "artist": "LamTuan",
+        "coverUrl": "https://drive.google.com/uc?export=download&id=13x2OPy4IYC95gIuReK6xjAzw3SmCsQ65",
+        "duration": "5:59",
+        "fileUrl": "https://drive.google.com/uc?export=download&id=1ZmgoXT4DKOiRvOUuO6ILHftwtSw7p1oh",
+        "title": "Hứa nhưng chẳng tới",
+        "songId": "song_5",
+        "lyrics": "Anh hứa sẽ về bên em...\nNhưng sao mãi chẳng thấy đâu..."
+      }
     },
     "song_6": {
-      "artist": "HoaiLam",
-      "coverUrl": "https://drive.google.com/uc?export=download&id=1hOufPcIlaM09OCrrR-qLJehGs-9LQx-Y",
-      "duration": "5:28",
-      "fileUrl": "https://drive.google.com/uc?export=download&id=1BBsZEc94Vb-rZ81yDsYjosappYZYcXZE",
-      "title": "Hoa nở không màu"
+      "metadata": {
+        "artist": "HoaiLam",
+        "coverUrl": "https://drive.google.com/uc?export=download&id=1hOufPcIlaM09OCrrR-qLJehGs-9LQx-Y",
+        "duration": "5:28",
+        "fileUrl": "https://drive.google.com/uc?export=download&id=1BBsZEc94Vb-rZ81yDsYjosappYZYcXZE",
+        "title": "Hoa nở không màu",
+        "songId": "song_6",
+        "lyrics": "Hoa nở không màu giữa đêm buồn...\nTình yêu như cơn gió thoảng qua..."
+      }
     },
     "song_7": {
-      "artist": "AnhQuanIdol",
-      "coverUrl": "https://drive.google.com/uc?export=download&id=1N-HIEjK8PiH02O8mubwBzREr2DK9S1WR",
-      "duration": "5:10",
-      "fileUrl": "https://drive.google.com/uc?export=download&id=1e0Ay45Hmksti1TOb4MmyMbzHn0VBww_u",
-      "title": "Em là không thể"
+      "metadata": {
+        "artist": "AnhQuanIdol",
+        "coverUrl": "https://drive.google.com/uc?export=download&id=1N-HIEjK8PiH02O8mubwBzREr2DK9S1WR",
+        "duration": "5:10",
+        "fileUrl": "https://drive.google.com/uc?export=download&id=1e0Ay45Hmksti1TOb4MmyMbzHn0VBww_u",
+        "title": "Em là không thể",
+        "songId": "song_7",
+        "lyrics": "Em là không thể thay thế...\nDù trái tim anh bật khóc..."
+      }
     },
     "song_8": {
-      "artist": "Erik",
-      "coverUrl": "https://drive.google.com/uc?export=download&id=1i1d1FTirRxn_CBWtKNqYkphwO7e2n8YZ",
-      "duration": "3:53",
-      "fileUrl": "https://drive.google.com/uc?export=download&id=1-D-_QzcZTjlT-DihRF12krmphKypNW0o",
-      "title": "Dù cho tận thế"
+      "metadata": {
+        "artist": "Erik",
+        "coverUrl": "https://drive.google.com/uc?export=download&id=1i1d1FTirRxn_CBWtKNqYkphwO7e2n8YZ",
+        "duration": "3:53",
+        "fileUrl": "https://drive.google.com/uc?export=download&id=1-D-_QzcZTjlT-DihRF12krmphKypNW0o",
+        "title": "Dù cho tận thế",
+        "songId": "song_8",
+        "lyrics": "Dù cho tận thế đến đi nữa...\nAnh vẫn sẽ mãi yêu em..."
+      }
     },
     "song_9": {
-      "artist": "ThanhDat",
-      "coverUrl": "https://drive.google.com/uc?export=download&id=1j4NfdSmQqNYP3pHUmCF4xao6tWlkdHUq",
-      "duration": "4:56",
-      "fileUrl": "https://drive.google.com/uc?export=download&id=1sqn8DjbobHo6tMYqaNb8BVyGdnnrq3xd",
-      "title": "Cạn tình như thế"
+      "metadata": {
+        "artist": "ThanhDat",
+        "coverUrl": "https://drive.google.com/uc?export=download&id=1j4NfdSmQqNYP3pHUmCF4xao6tWlkdHUq",
+        "duration": "4:56",
+        "fileUrl": "https://drive.google.com/uc?export=download&id=1sqn8DjbobHo6tMYqaNb8BVyGdnnrq3xd",
+        "title": "Cạn tình như thế",
+        "songId": "song_9",
+        "lyrics": "Tình yêu như ly rượu cạn...\nChỉ còn lại vị đắng cay..."
+      }
     },
     "song_10": {
-      "artist": "Huỳnh Văn",
-      "coverUrl": "https://drive.google.com/uc?export=download&id=1WdhnfQy1PXAvVnwqEfRr8tpQvISzP383",
-      "duration": "4:26",
-      "fileUrl": "https://drive.google.com/uc?export=download&id=1Q-iFxS1AAeJUfXlseV7J3lYnQI0BQClw",
-      "title": "Cẩm tú cầu"
+      "metadata": {
+        "artist": "Huỳnh Văn",
+        "coverUrl": "https://drive.google.com/uc?export=download&id=1WdhnfQy1PXAvVnwqEfRr8tpQvISzP383",
+        "duration": "4:26",
+        "fileUrl": "https://drive.google.com/uc?export=download&id=1Q-iFxS1AAeJUfXlseV7J3lYnQI0BQClw",
+        "title": "Cẩm tú cầu",
+        "songId": "song_10",
+        "lyrics": "Hoa cẩm tú cầu nở tím...\nLòng ai chợt thấy bâng khuâng..."
+      }
     },
     "song_11": {
-      "artist": "Sơn Tùng",
-      "coverUrl": "https://drive.google.com/uc?export=download&id=1Fw57K9rad8htMN5SOxzG04N9S5uDf4QT",
-      "duration": "4:51",
-      "fileUrl": "https://drive.google.com/uc?export=download&id=15AKEe-yH0l5Z6fsKLUo9C4g0zFnDv0n-",
-      "title": "Âm thầm bên em"
+      "metadata": {
+        "artist": "Sơn Tùng",
+        "coverUrl": "https://drive.google.com/uc?export=download&id=1Fw57K9rad8htMN5SOxzG04N9S5uDf4QT",
+        "duration": "4:51",
+        "fileUrl": "https://drive.google.com/uc?export=download&id=15AKEe-yH0l5Z6fsKLUo9C4g0zFnDv0n-",
+        "title": "Âm thầm bên em",
+        "songId": "song_11",
+        "lyrics": "Anh chỉ muốn âm thầm bên em...\nDù em không hay biết..."
+      }
     }
+  },
+  "banner": {
+    "featured_songs": [
+      {
+        "songId": "song_1",
+        "title": "Tái sinh",
+        "artist": "TungDuong",
+        "coverUrl": "https://drive.google.com/uc?export=download&id=1l3dkQcjzp8AH5L75X-KxGjEW_dWpNuAM"
+      },
+      {
+        "songId": "song_3",
+        "title": "Ngày mai người ta lấy chồng",
+        "artist": "ThanhDat",
+        "coverUrl": "https://drive.google.com/uc?export=download&id=1BZt8xDLtnhNvooi8T_yxGKCPaF4hn4ZJ"
+      },
+      {
+        "songId": "song_6",
+        "title": "Hoa nở không màu",
+        "artist": "HoaiLam",
+        "coverUrl": "https://drive.google.com/uc?export=download&id=1hOufPcIlaM09OCrrR-qLJehGs-9LQx-Y"
+      },
+      {
+        "songId": "song_8",
+        "title": "Dù cho tận thế",
+        "artist": "Erik",
+        "coverUrl": "https://drive.google.com/uc?export=download&id=1i1d1FTirRxn_CBWtKNqYkphwO7e2n8YZ"
+      }
+    ],
+    "title": "Bài hát nổi bật tuần này",
+    "description": "Khám phá những bản hit đang thịnh hành"
   }
 }
