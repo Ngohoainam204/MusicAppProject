@@ -1,5 +1,6 @@
 package com.example.myapplication.nowplaying;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.LayoutInflater;
@@ -8,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -15,6 +17,11 @@ import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
 import com.example.myapplication.R;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.concurrent.TimeUnit;
 
@@ -35,10 +42,17 @@ public class LyricsFragment extends Fragment {
     private NowPlayingActivity nowPlayingActivity;
     private final Handler handler = new Handler();
 
+    // Firebase references
+    private FirebaseDatabase database;
+    private DatabaseReference lyricsRef;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         nowPlayingActivity = (NowPlayingActivity) getActivity();
+        // Initialize Firebase Database reference
+        database = FirebaseDatabase.getInstance();
+        lyricsRef = database.getReference("songs"); // Refer to songs node in Firebase
     }
 
     @Nullable
@@ -74,7 +88,7 @@ public class LyricsFragment extends Fragment {
             tvArtist.setText(nowPlayingActivity.tvArtist.getText());
             tvCurrentTime.setText(nowPlayingActivity.tvCurrentTime.getText());
             tvDuration.setText(nowPlayingActivity.tvDuration.getText());
-
+            tvLyricsContent.setText(nowPlayingActivity.SongLyrics);
             // Chỉ load background từ NowPlayingActivity
             Glide.with(this)
                     .load(nowPlayingActivity.imgCover.getDrawable())
@@ -85,7 +99,40 @@ public class LyricsFragment extends Fragment {
                 seekBar.setProgress((int) nowPlayingActivity.exoPlayer.getCurrentPosition());
                 updatePlayPauseButton();
             }
+
+            // Load lyrics từ Firebase
+            loadLyricsFromFirebase(nowPlayingActivity.currentSongId);  // currentSongId là ID bài hát hiện tại
         }
+    }
+
+    private void loadLyricsFromFirebase(String songId) {
+        // Kiểm tra nếu songId là null
+        if (songId == null || songId.isEmpty()) {
+            Toast.makeText(getContext(), "Song ID không hợp lệ", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Lấy dữ liệu lyrics từ Firebase
+        lyricsRef.child(songId).addListenerForSingleValueEvent(new ValueEventListener() {
+            @SuppressLint("SetTextI18n")
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    String lyrics = dataSnapshot.child("lyrics").getValue(String.class);
+                    if (lyrics != null) {
+                        tvLyricsContent.setText(lyrics);
+                    } else {
+                        tvLyricsContent.setText("Lyrics not available.");
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                // Handle error (e.g., show a Toast)
+                Toast.makeText(getContext(), "Failed to load lyrics.", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void setupListeners() {
@@ -161,6 +208,7 @@ public class LyricsFragment extends Fragment {
         }
     }
 
+    @SuppressLint("DefaultLocale")
     private String formatTime(int millis) {
         long seconds = TimeUnit.MILLISECONDS.toSeconds(millis) % 60;
         long minutes = TimeUnit.MILLISECONDS.toMinutes(millis);
