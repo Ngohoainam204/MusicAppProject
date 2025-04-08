@@ -1,12 +1,14 @@
 package com.example.myapplication.adapters;
 
 import android.content.Context;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -18,6 +20,9 @@ public class BannerAdapter extends RecyclerView.Adapter<BannerAdapter.BannerView
 
     private Context context;
     private List<String> bannerUrls;
+    private RecyclerView recyclerView;
+    private Handler handler = new Handler();
+    private Runnable autoScrollRunnable;
 
     public BannerAdapter(Context context, List<String> bannerUrls) {
         this.context = context;
@@ -28,6 +33,10 @@ public class BannerAdapter extends RecyclerView.Adapter<BannerAdapter.BannerView
     @Override
     public BannerViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(context).inflate(R.layout.item_banner, parent, false);
+        if (recyclerView == null) {
+            recyclerView = (RecyclerView) parent;
+            startAutoScroll();
+        }
         return new BannerViewHolder(view);
     }
 
@@ -45,6 +54,27 @@ public class BannerAdapter extends RecyclerView.Adapter<BannerAdapter.BannerView
         return bannerUrls.size();
     }
 
+    private void startAutoScroll() {
+        autoScrollRunnable = new Runnable() {
+            @Override
+            public void run() {
+                if (recyclerView != null && bannerUrls.size() > 0) {
+                    int nextItem = ((LinearLayoutManager) recyclerView.getLayoutManager()).findFirstVisibleItemPosition() + 1;
+                    if (nextItem >= bannerUrls.size()) {
+                        nextItem = 0;
+                    }
+                    recyclerView.smoothScrollToPosition(nextItem);
+                    handler.postDelayed(this, 2000);
+                }
+            }
+        };
+        handler.postDelayed(autoScrollRunnable, 2000);
+    }
+
+    public void stopAutoScroll() {
+        handler.removeCallbacks(autoScrollRunnable);
+    }
+
     public static class BannerViewHolder extends RecyclerView.ViewHolder {
         ImageView imageView;
 
@@ -54,19 +84,14 @@ public class BannerAdapter extends RecyclerView.Adapter<BannerAdapter.BannerView
         }
     }
 
-    // Phương thức này chuyển đổi URL Google Drive sang URL tải trực tiếp
     private String convertGoogleDriveUrlToDirectImageUrl(String url) {
         if (url == null || url.isEmpty()) {
             return null;
         }
-
-        // Kiểm tra URL có chứa "id=" hay không
         int idStart = url.indexOf("id=");
         if (idStart == -1) {
-            return url;  // Trả về URL gốc nếu không tìm thấy id=
+            return url;
         }
-
-        // Trích xuất ID của tệp từ URL
         String fileId = url.substring(idStart + 3);
         return "https://drive.google.com/uc?export=download&id=" + fileId;
     }
