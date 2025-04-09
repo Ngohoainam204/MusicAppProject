@@ -20,6 +20,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.myapplication.R;
 import com.example.myapplication.adapters.SongAdapter;
 import com.example.myapplication.models.Song;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -37,7 +38,10 @@ public class SongsFragment extends Fragment {
     private EditText etSearch;
     private List<Song> songList, filteredList;
     private SongAdapter songAdapter;
-    private DatabaseReference databaseReference;
+    private DatabaseReference songsRef, favRef;
+
+    // Firebase URL đúng region
+    private static final String FIREBASE_DB_URL = "https://musicplayerapp-aed33-default-rtdb.asia-southeast1.firebasedatabase.app";
 
     @Nullable
     @Override
@@ -53,10 +57,11 @@ public class SongsFragment extends Fragment {
         songAdapter = new SongAdapter(getContext(), filteredList);
         recyclerView.setAdapter(songAdapter);
 
-        databaseReference = FirebaseDatabase.getInstance("https://musicplayerapp-aed33-default-rtdb.asia-southeast1.firebasedatabase.app")
-                .getReference("music_library");
+        // Sử dụng đúng URL region
+        songsRef = FirebaseDatabase.getInstance(FIREBASE_DB_URL)
+                .getReference("Songs");
 
-        loadSongs();
+        loadSongsWithFavourites();
 
         etSearch.addTextChangedListener(new TextWatcher() {
             @Override
@@ -76,26 +81,47 @@ public class SongsFragment extends Fragment {
         return view;
     }
 
-    private void loadSongs() {
-        databaseReference.addValueEventListener(new ValueEventListener() {
+    private void loadSongsWithFavourites() {
+        String userEmail = FirebaseAuth.getInstance().getCurrentUser().getEmail();
+        if (userEmail == null) return;
+        String encodedEmail = userEmail.replace(".", "_");
+
+        favRef = FirebaseDatabase.getInstance(FIREBASE_DB_URL)
+                .getReference("Favourites").child(encodedEmail);
+
+        favRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                songList.clear();
-                for (DataSnapshot songSnapshot : snapshot.getChildren()) {
-                    DataSnapshot metadataSnapshot = songSnapshot.child("metadata");
-                    Song song = metadataSnapshot.getValue(Song.class);
-                    if (song != null) {
-                        song.setSongId(songSnapshot.getKey());
-                        song.setFileUrl(convertDriveUrl(song.getFileUrl()));
-                        songList.add(song);
+            public void onDataChange(@NonNull DataSnapshot favSnapshot) {
+                songsRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot songSnapshot) {
+                        songList.clear();
+                        for (DataSnapshot item : songSnapshot.getChildren()) {
+                            Song song = item.getValue(Song.class);
+                            if (song != null) {
+                                song.setSongId(item.getKey());
+                                song.setFileUrl(convertDriveUrl(song.getFileUrl()));
+                                if (favSnapshot.hasChild(song.getSongId())) {
+                                    song.setFavourite(true);
+                                }
+                                songList.add(song);
+                            }
+                        }
+                        filterSongs(etSearch.getText().toString());
                     }
-                }
-                filterSongs("");
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                        Toast.makeText(getContext(), "Lỗi tải bài hát", Toast.LENGTH_SHORT).show();
+                        Log.e(TAG, "Firebase song load error: " + error.getMessage());
+                    }
+                });
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(getContext(), "Error loading songs", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Lỗi tải yêu thích", Toast.LENGTH_SHORT).show();
+                Log.e(TAG, "Favourite load error: " + error.getMessage());
             }
         });
     }

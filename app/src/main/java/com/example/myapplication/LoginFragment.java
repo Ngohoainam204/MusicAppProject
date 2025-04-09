@@ -95,12 +95,32 @@ public class LoginFragment extends Fragment {
             return;
         }
 
-        // Đăng nhập với Firebase Authentication
+        // Ngăn người dùng nhấn liên tục
+        btnSignIn.setEnabled(false);
+
+        // Hiển thị loading
+        android.app.ProgressDialog progressDialog = new android.app.ProgressDialog(getContext());
+        progressDialog.setMessage("Signing in...");
+        progressDialog.setCancelable(false);
+        progressDialog.show();
+
+        // Đo thời gian đăng nhập
+        long startTime = System.currentTimeMillis();
+
         mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(task -> {
+                    long duration = System.currentTimeMillis() - startTime;
+                    progressDialog.dismiss();
+                    btnSignIn.setEnabled(true);
+
                     if (task.isSuccessful()) {
-                        Toast.makeText(getActivity(), "Login successful", Toast.LENGTH_SHORT).show();
-                        FirebaseUser user = mAuth.getCurrentUser();
+                        Toast.makeText(getActivity(), "Login successful (" + duration + " ms)", Toast.LENGTH_SHORT).show();
+
+                        // Nếu chọn Remember, lưu email lại
+                        if (checkBoxRemember.isChecked()) {
+                            getActivity().getSharedPreferences("LoginPrefs", getContext().MODE_PRIVATE)
+                                    .edit().putString("savedEmail", email).apply();
+                        }
 
                         // Chuyển sang MainActivity
                         if (getActivity() != null) {
@@ -108,10 +128,11 @@ public class LoginFragment extends Fragment {
                             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                             startActivity(intent);
                         }
-
                     } else {
-                        Toast.makeText(getActivity(), "Login failed: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(), "Login failed: " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
                     }
                 });
     }
+
+
 }

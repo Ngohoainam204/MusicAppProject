@@ -7,13 +7,12 @@ public class Song {
     private String fileUrl;
     private String coverUrl;
     private String duration;
-    private String lyrics;  // Thêm trường lyrics
+    private String lyrics;
+    private boolean isFavourite;  // Thêm thuộc tính này
 
-    // Constructor mặc định cần thiết cho Firebase
     public Song() {
     }
 
-    // Constructor để tạo song từ dữ liệu metadata và lyrics
     public Song(String songId, String title, String artist, String fileUrl, String coverUrl, String duration, String lyrics) {
         this.songId = songId;
         this.title = title;
@@ -21,7 +20,7 @@ public class Song {
         this.fileUrl = fileUrl;
         this.coverUrl = coverUrl;
         this.duration = duration;
-        this.lyrics = lyrics;  // Khởi tạo lyrics
+        this.lyrics = lyrics;
     }
 
     public String getSongId() {
@@ -78,5 +77,13 @@ public class Song {
 
     public void setLyrics(String lyrics) {
         this.lyrics = lyrics;
+    }
+
+    public boolean isFavourite() {
+        return isFavourite;
+    }
+
+    public void setFavourite(boolean favourite) {
+        isFavourite = favourite;
     }
 }

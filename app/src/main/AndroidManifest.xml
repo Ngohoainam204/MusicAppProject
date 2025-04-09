@@ -20,7 +20,7 @@
         <activity
             android:name=".StartedActivity"
             android:exported="true"
-            android:label="Get Started"
+            android:label="Flexible"
             android:theme="@style/Theme.MyApplication">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
