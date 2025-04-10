@@ -13,12 +13,14 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.content.SharedPreferences;
+import android.widget.AutoCompleteTextView;
+import android.widget.ArrayAdapter;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.example.myapplication.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -32,14 +34,15 @@ import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.GoogleAuthProvider;
 
 public class LoginFragment extends Fragment {
-    private EditText editTextUsername, editTextPassword;
+
+    private AutoCompleteTextView editTextUsername;
+    private EditText editTextPassword;
     private Button btnSignIn;
     private ImageView imgGoogleSignIn, togglePassword;
     private TextView btnRegisterNow;
     private CheckBox checkBoxRemember;
     private FirebaseAuth mAuth;
     private boolean isPasswordVisible = false;
-
     private GoogleSignInClient mGoogleSignInClient;
     private static final int RC_SIGN_IN = 9001;
 
@@ -57,10 +60,9 @@ public class LoginFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        // Khởi tạo FirebaseAuth
         mAuth = FirebaseAuth.getInstance();
 
-        // Ánh xạ UI
+        // Ánh xạ
         editTextUsername = view.findViewById(R.id.editTextUsername);
         editTextPassword = view.findViewById(R.id.editTextPassword);
         btnSignIn = view.findViewById(R.id.btnSignIn);
@@ -69,10 +71,27 @@ public class LoginFragment extends Fragment {
         togglePassword = view.findViewById(R.id.togglePassword);
         imgGoogleSignIn = view.findViewById(R.id.imgGoogleSignIn);
 
-        // Xử lý sự kiện đăng nhập
+        // Gợi ý email đã lưu
+        SharedPreferences prefs = requireActivity().getSharedPreferences("LoginPrefs", getContext().MODE_PRIVATE);
+        String savedEmail = prefs.getString("savedEmail", "");
+        if (!savedEmail.isEmpty()) {
+            ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(),
+                    android.R.layout.simple_dropdown_item_1line,
+                    new String[]{savedEmail});
+            editTextUsername.setAdapter(adapter);
+            editTextUsername.setThreshold(1);
+            editTextUsername.setText(savedEmail);
+
+            // Ẩn dropdown khi chọn
+            editTextUsername.setOnItemClickListener((adapterView, view1, i, l) -> {
+                editTextUsername.dismissDropDown();
+            });
+        }
+
+        // Đăng nhập thường
         btnSignIn.setOnClickListener(v -> loginUser());
 
-        // Xử lý sự kiện đăng ký
+        // Đăng ký
         btnRegisterNow.setOnClickListener(v -> {
             getParentFragmentManager().beginTransaction()
                     .replace(R.id.fragment_container, new RegisterFragment())
@@ -80,7 +99,7 @@ public class LoginFragment extends Fragment {
                     .commit();
         });
 
-        // Xử lý hiển thị/ẩn mật khẩu
+        // Hiện / Ẩn mật khẩu
         togglePassword.setOnClickListener(v -> {
             if (isPasswordVisible) {
                 editTextPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
@@ -95,7 +114,7 @@ public class LoginFragment extends Fragment {
 
         // Google Sign-In
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(getString(R.string.default_web_client_id)) // Đặt client ID trong strings.xml
+                .requestIdToken(getString(R.string.default_web_client_id)) // Đảm bảo bạn đã thêm client_id vào strings.xml
                 .requestEmail()
                 .build();
         mGoogleSignInClient = GoogleSignIn.getClient(requireContext(), gso);
@@ -117,16 +136,12 @@ public class LoginFragment extends Fragment {
             return;
         }
 
-        // Ngăn người dùng nhấn liên tục
         btnSignIn.setEnabled(false);
-
-        // Hiển thị loading
         android.app.ProgressDialog progressDialog = new android.app.ProgressDialog(getContext());
         progressDialog.setMessage("Signing in...");
         progressDialog.setCancelable(false);
         progressDialog.show();
 
-        // Đo thời gian đăng nhập
         long startTime = System.currentTimeMillis();
 
         mAuth.signInWithEmailAndPassword(email, password)
@@ -138,23 +153,19 @@ public class LoginFragment extends Fragment {
                     if (task.isSuccessful()) {
                         Toast.makeText(getActivity(), "Login successful (" + duration + " ms)", Toast.LENGTH_SHORT).show();
 
-                        // Nếu chọn Remember, lưu email lại
+                        // Lưu email nếu được chọn
                         if (checkBoxRemember.isChecked()) {
-                            getActivity().getSharedPreferences("LoginPrefs", getContext().MODE_PRIVATE)
+                            requireActivity().getSharedPreferences("LoginPrefs", getContext().MODE_PRIVATE)
                                     .edit().putString("savedEmail", email).apply();
                         }
 
-                        // Chuyển sang MainActivity
-                        if (getActivity() != null) {
-                            Intent intent = new Intent(getActivity(), MainActivity.class);
-                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                            startActivity(intent);
-                        }
+                        openMainActivity();
                     } else {
                         Toast.makeText(getActivity(), "Login failed: " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
                     }
                 });
     }
+
     private void signInWithGoogle() {
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
         startActivityForResult(signInIntent, RC_SIGN_IN);
