@@ -15,7 +15,6 @@ import com.example.myapplication.ChangePasswordActivity;
 import com.example.myapplication.LoginFragment;
 import com.example.myapplication.R;
 import com.example.myapplication.RegisterLoginActivity;
-import com.example.myapplication.StartedActivity;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
