@@ -61,7 +61,7 @@
 
     <!-- Danh sách bài hát -->
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvSongs"
+        android:id="@+id/recycler_playlist_home"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:padding="8dp"

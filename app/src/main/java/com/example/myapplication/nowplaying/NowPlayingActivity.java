@@ -23,7 +23,8 @@ import androidx.media3.exoplayer.DefaultLoadControl;
 import com.bumptech.glide.Glide;
 import com.example.myapplication.R;
 
-
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 public class NowPlayingActivity extends AppCompatActivity {
@@ -34,6 +35,8 @@ public class NowPlayingActivity extends AppCompatActivity {
     ImageView imgCover;
     private ImageView btnPlayPause;
     private ImageView btnBack;
+    private ImageView btnNext;
+    private ImageView btnPrevious;
     private ImageView btnLyric;
     private SeekBar seekBar;
     ExoPlayer exoPlayer;
@@ -41,8 +44,30 @@ public class NowPlayingActivity extends AppCompatActivity {
     boolean isPlaying = false;
     boolean isSeeking = false;
     String currentSongId;
-
     String SongLyrics;
+
+    // Variables for song list management
+    private List<Song> songList = new ArrayList<>();
+    private int currentSongIndex = -1;
+
+    // Song model class
+    public static class Song {
+        String id;
+        String title;
+        String artist;
+        String coverUrl;
+        String songUrl;
+        String lyrics;
+
+        public Song(String id, String title, String artist, String coverUrl, String songUrl, String lyrics) {
+            this.id = id;
+            this.title = title;
+            this.artist = artist;
+            this.coverUrl = coverUrl;
+            this.songUrl = songUrl;
+            this.lyrics = lyrics;
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,9 +80,14 @@ public class NowPlayingActivity extends AppCompatActivity {
         seekBar = findViewById(R.id.seekBar);
         btnPlayPause = findViewById(R.id.btnPlayPause);
         btnBack = findViewById(R.id.btnBack);
+        btnNext = findViewById(R.id.btnNext);
+        btnPrevious = findViewById(R.id.btnPrevious);
         tvCurrentTime = findViewById(R.id.tvCurrentTime);
         tvDuration = findViewById(R.id.tvDuration);
         btnLyric = findViewById(R.id.btnLyric);
+
+        // Initialize song list (you should populate this with your actual data)
+        initializeSongList();
 
         Intent intent = getIntent();
         if (intent != null) {
@@ -68,6 +98,9 @@ public class NowPlayingActivity extends AppCompatActivity {
             currentSongId = intent.getStringExtra("song_id");
             SongLyrics = intent.getStringExtra("song_lyrics");
 
+            // Find the current song index in the list
+            currentSongIndex = findSongIndexById(currentSongId);
+
             tvSongTitle.setText(title);
             tvArtist.setText(artist);
             Glide.with(this).load(coverUrl).into(imgCover);
@@ -76,6 +109,8 @@ public class NowPlayingActivity extends AppCompatActivity {
 
         btnPlayPause.setOnClickListener(v -> togglePlayPause());
         btnBack.setOnClickListener(v -> finish());
+        btnNext.setOnClickListener(v -> playNextSong());
+        btnPrevious.setOnClickListener(v -> playPreviousSong());
         btnLyric.setOnClickListener(v -> {
             if (currentSongId == null || currentSongId.isEmpty()) {
                 Toast.makeText(NowPlayingActivity.this, "Song ID không hợp lệ!", Toast.LENGTH_SHORT).show();
@@ -106,6 +141,65 @@ public class NowPlayingActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    private void initializeSongList() {
+        // You should populate this list with your actual song data
+        // This is just an example
+        songList.add(new Song("1", "Song 1", "Artist 1", "cover_url_1", "song_url_1", "lyrics_1"));
+        songList.add(new Song("2", "Song 2", "Artist 2", "cover_url_2", "song_url_2", "lyrics_2"));
+        // Add more songs as needed
+    }
+
+    private int findSongIndexById(String songId) {
+        for (int i = 0; i < songList.size(); i++) {
+            if (songList.get(i).id.equals(songId)) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    private void playNextSong() {
+        if (songList.isEmpty() || currentSongIndex == -1) return;
+
+        int nextIndex = currentSongIndex + 1;
+        if (nextIndex >= songList.size()) {
+            nextIndex = 0; // Loop back to first song
+        }
+
+        playSongAtIndex(nextIndex);
+    }
+
+    private void playPreviousSong() {
+        if (songList.isEmpty() || currentSongIndex == -1) return;
+
+        int prevIndex = currentSongIndex - 1;
+        if (prevIndex < 0) {
+            prevIndex = songList.size() - 1; // Loop to last song
+        }
+
+        playSongAtIndex(prevIndex);
+    }
+
+    private void playSongAtIndex(int index) {
+        if (index < 0 || index >= songList.size()) return;
+
+        currentSongIndex = index;
+        Song song = songList.get(index);
+
+        // Update UI
+        tvSongTitle.setText(song.title);
+        tvArtist.setText(song.artist);
+        Glide.with(this).load(song.coverUrl).into(imgCover);
+        currentSongId = song.id;
+        SongLyrics = song.lyrics;
+
+        // Play the song
+        if (exoPlayer != null) {
+            exoPlayer.release();
+        }
+        initializePlayer(song.songUrl);
     }
 
     @OptIn(markerClass = UnstableApi.class)
@@ -202,4 +296,3 @@ public class NowPlayingActivity extends AppCompatActivity {
         super.onDestroy();
     }
 }
-

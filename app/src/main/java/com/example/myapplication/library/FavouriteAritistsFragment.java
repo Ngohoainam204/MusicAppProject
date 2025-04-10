@@ -11,9 +11,9 @@ import androidx.fragment.app.Fragment;
 
 import com.example.myapplication.R;
 
-public class ArtistsFragment extends Fragment {
+public class FavouriteAritistsFragment extends Fragment {
 
-    public ArtistsFragment() {
+    public FavouriteAritistsFragment() {
     }
 
     @Nullable

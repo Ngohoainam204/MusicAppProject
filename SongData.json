@@ -1,19 +1,92 @@
 {
-  "Playlists": {
-    "pl_1": {
-      "playlistName": "Ballad Buồn",
-      "description": "Những bản nhạc nhẹ nhàng buồn",
-      "listOfSongIds": ["song_1", "song_3", "song_6"]
+  "Songs": {
+    "song_1": {
+      "artist": "Tùng Dương",
+      "coverUrl": "https://drive.google.com/uc?export=download&id=1l3dkQcjzp8AH5L75X-KxGjEW_dWpNuAM",
+      "duration": "4:00",
+      "fileUrl": "https://asset.cloudinary.com/dvkypaemi/60b325b3112a35d935ce1128706f53b3",
+      "title": "Tái sinh",
+      "lyrics": "Cơn mưa rơi tưới mát tâm hồn..."
     },
-    "pl_2": {
-      "playlistName": "Nhạc Hàn Quốc",
-      "description": "OST và K-pop hay nhất",
-      "listOfSongIds": ["song_2", "song_8"]
+    "song_10": {
+      "artist": "Huỳnh Văn",
+      "coverUrl": "https://drive.google.com/uc?export=download&id=1WdhnfQy1PXAvVnwqEfRr8tpQvISzP383",
+      "duration": "4:26",
+      "fileUrl": "https://asset.cloudinary.com/dvkypaemi/94877ae037bac326a128e3fb20c9d949",
+      "title": "Cẩm tú cầu",
+      "lyrics": null
     },
-    "pl_3": {
-      "playlistName": "Chill Tối Cuối Tuần",
-      "description": "Nghe nhẹ nhàng khi thư giãn",
-      "listOfSongIds": ["song_4", "song_5", "song_10"]
+    "song_11": {
+      "artist": "Sơn Tùng",
+      "coverUrl": "https://drive.google.com/uc?export=download&id=1Fw57K9rad8htMN5SOxzG04N9S5uDf4QT",
+      "duration": "4:51",
+      "fileUrl": "https://asset.cloudinary.com/dvkypaemi/a3ac33cbc99cbe546901c28aabf366cd",
+      "title": "Âm thầm bên em",
+      "lyrics": null
+    },
+    "song_2": {
+      "artist": "SS501",
+      "coverUrl": "https://drive.google.com/uc?export=download&id=1zRu2peIdEqdYBWedx8pPz1fERivIWSq_",
+      "duration": "3:12",
+      "fileUrl": "https://asset.cloudinary.com/dvkypaemi/eae9820fcf3812de55131e85407a7121",
+      "title": "Making A Lover",
+      "lyrics": null
+    },
+    "song_3": {
+      "artist": "ThanhDat",
+      "coverUrl": "https://drive.google.com/uc?export=download&id=1BZt8xDLtnhNvooi8T_yxGKCPaF4hn4ZJ",
+      "duration": "6:02",
+      "fileUrl": "https://asset.cloudinary.com/dvkypaemi/6fde8d161f32b7899902943cd89d35a0",
+      "title": "Ngày mai người ta lấy chồng",
+      "lyrics": null
+    },
+    "song_4": {
+      "artist": "DuongDomic",
+      "coverUrl": "https://drive.google.com/uc?export=download&id=1eDgFcg-MTvxbR8EGYVc0pOnI77wcweo8",
+      "duration": "3:28",
+      "fileUrl": "https://asset.cloudinary.com/dvkypaemi/83bf34001ff0c82256e776d0fd846077",
+      "title": "Mất kết nối",
+      "lyrics": null
+    },
+    "song_5": {
+      "artist": "LamTuan",
+      "coverUrl": "https://drive.google.com/uc?export=download&id=13x2OPy4IYC95gIuReK6xjAzw3SmCsQ65",
+      "duration": "5:59",
+      "fileUrl": "https://asset.cloudinary.com/dvkypaemi/f8982a56abb31566693adc443ca3603b",
+      "title": "Hứa nhưng chẳng tới",
+      "lyrics": null
+    },
+    "song_6": {
+      "artist": "HoaiLam",
+      "coverUrl": "https://drive.google.com/uc?export=download&id=1hOufPcIlaM09OCrrR-qLJehGs-9LQx-Y",
+      "duration": "5:28",
+      "fileUrl": "https://asset.cloudinary.com/dvkypaemi/9dd51a602d41f082fed557d7fbd4d744",
+      "title": "Hoa nở không màu",
+      "lyrics": null
+    },
+    "song_7": {
+      "artist": "AnhQuanIdol",
+      "coverUrl": "https://drive.google.com/uc?export=download&id=1N-HIEjK8PiH02O8mubwBzREr2DK9S1WR",
+      "duration": "5:10",
+      "fileUrl": "https://asset.cloudinary.com/dvkypaemi/94877ae037bac326a128e3fb20c9d949",
+      "title": "Em là không thể",
+      "lyrics": null
+    },
+    "song_8": {
+      "artist": "Erik",
+      "coverUrl": "https://drive.google.com/uc?export=download&id=1i1d1FTirRxn_CBWtKNqYkphwO7e2n8YZ",
+      "duration": "3:53",
+      "fileUrl": "https://asset.cloudinary.com/dvkypaemi/9a2e70d81255aa6d2eed270ddb7f22f7",
+      "title": "Dù cho tận thế",
+      "lyrics": null
+    },
+    "song_9": {
+      "artist": "ThanhDat",
+      "coverUrl": "https://drive.google.com/uc?export=download&id=1j4NfdSmQqNYP3pHUmCF4xao6tWlkdHUq",
+      "duration": "4:56",
+      "fileUrl": "https://asset.cloudinary.com/dvkypaemi/c6c0fdbce44d6623623eba4ddfb3ecbd",
+      "title": "Cạn tình như thế",
+      "lyrics": null
     }
   },
   "Albums": {
@@ -21,163 +94,124 @@
       "albumName": "Tái Sinh",
       "artist": "Tùng Dương",
       "coverUrl": "https://drive.google.com/uc?export=download&id=1l3dkQcjzp8AH5L75X-KxGjEW_dWpNuAM",
-      "listOfSongIds": ["song_1"]
+      "listOfSongIds": [
+        "song_1"
+      ]
     },
     "ab_2": {
       "albumName": "Những Ngày Xưa",
       "artist": "ThanhDat",
       "coverUrl": "https://drive.google.com/uc?export=download&id=1BZt8xDLtnhNvooi8T_yxGKCPaF4hn4ZJ",
-      "listOfSongIds": ["song_3", "song_9"]
+      "listOfSongIds": [
+        "song_3",
+        "song_9"
+      ]
     },
     "ab_3": {
       "albumName": "OST Hàn Quốc",
       "artist": "SS501",
       "coverUrl": "https://drive.google.com/uc?export=download&id=1zRu2peIdEqdYBWedx8pPz1fERivIWSq_",
-      "listOfSongIds": ["song_2"]
+      "listOfSongIds": [
+        "song_2"
+      ]
     }
   },
   "Artists": {
     "ar_1": {
       "artistName": "Tùng Dương",
-      "bio": "Ca sĩ kỳ cựu với chất giọng nội lực",
-      "avatarUrl": "https://drive.google.com/uc?export=download&id=1l3dkQcjzp8AH5L75X-KxGjEW_dWpNuAM"
+      "avatarUrl": "https://drive.google.com/uc?export=download&id=1l3dkQcjzp8AH5L75X-KxGjEW_dWpNuAM",
+      "bio": "Ca sĩ kỳ cựu với chất giọng nội lực"
     },
     "ar_2": {
       "artistName": "SS501",
-      "bio": "Nhóm nhạc Hàn Quốc nổi tiếng",
-      "avatarUrl": "https://drive.google.com/uc?export=download&id=1zRu2peIdEqdYBWedx8pPz1fERivIWSq_"
+      "avatarUrl": "https://drive.google.com/uc?export=download&id=1zRu2peIdEqdYBWedx8pPz1fERivIWSq_",
+      "bio": "Nhóm nhạc Hàn Quốc nổi tiếng"
     },
     "ar_3": {
       "artistName": "ThanhDat",
-      "bio": "Ca sĩ trẻ với nhiều bản hit",
-      "avatarUrl": "https://drive.google.com/uc?export=download&id=1BZt8xDLtnhNvooi8T_yxGKCPaF4hn4ZJ"
+      "avatarUrl": "https://drive.google.com/uc?export=download&id=1BZt8xDLtnhNvooi8T_yxGKCPaF4hn4ZJ",
+      "bio": "Ca sĩ trẻ với nhiều bản hit"
     },
     "ar_4": {
       "artistName": "DuongDomic",
-      "bio": "Nhạc sĩ trẻ tài năng",
-      "avatarUrl": "https://drive.google.com/uc?export=download&id=1eDgFcg-MTvxbR8EGYVc0pOnI77wcweo8"
+      "avatarUrl": "https://drive.google.com/uc?export=download&id=1eDgFcg-MTvxbR8EGYVc0pOnI77wcweo8",
+      "bio": "Nhạc sĩ trẻ tài năng"
     },
     "ar_5": {
       "artistName": "LamTuan",
-      "bio": "Ca sĩ trẻ triển vọng",
-      "avatarUrl": "https://drive.google.com/uc?export=download&id=13x2OPy4IYC95gIuReK6xjAzw3SmCsQ65"
-    }
-  },
-  "Favourites": {
-    "user_1": {
-      "songId": "song_6",
-      "addedDate": "2025-04-08"
-    },
-    "user_2": {
-      "songId": "song_2",
-      "addedDate": "2025-04-07"
+      "avatarUrl": "https://drive.google.com/uc?export=download&id=13x2OPy4IYC95gIuReK6xjAzw3SmCsQ65",
+      "bio": "Ca sĩ trẻ triển vọng"
     }
   },
   "Users": {
-    "user_1": {
-      "username": "hoangthanh",
-      "email": "hoangthanh@example.com",
-      "avatarUrl": "https://example.com/avatar1.png"
+    "lequanghuy278@gmail_com": {
+      "avatarUrl": "https://drive.google.com/uc?export=download&id=1l3dkQcjzp8AH5L75X-KxGjEW_dWpNuAM",
+      "username": "Quang Huy"
     },
-    "user_2": {
-      "username": "lananh",
-      "email": "lananh@example.com",
-      "avatarUrl": "https://example.com/avatar2.png"
-    },
-    "user_3": {
-      "username": "truonggiang",
-      "email": "truonggiang@example.com",
-      "avatarUrl": "https://example.com/avatar3.png"
+    "ngonam2k4@gmail_com": {
+      "avatarUrl": "https://drive.google.com/uc?export=download&id=1BZt8xDLtnhNvooi8T_yxGKCPaF4hn4ZJ",
+      "username": "Ngô Nam"
     }
   },
-  "Songs": {
-    "song_1": {
-      "title": "Tái sinh",
-      "artist": "Tùng Dương",
-      "lyrics": "Cơn mưa rơi tưới mát tâm hồn...",
-      "duration": "4:00",
+  "Playlists": {
+    "pl_1": {
+      "description": "Những bản nhạc nhẹ nhàng buồn",
+      "listOfSongIds": [
+        "song_1",
+        "song_3",
+        "song_6"
+      ],
+      "playlistName": "Ballad Buồn"
+    },
+    "pl_2": {
+      "description": "OST và K-pop hay nhất",
+      "listOfSongIds": [
+        "song_2",
+        "song_8"
+      ],
+      "playlistName": "Nhạc Hàn Quốc"
+    },
+    "pl_3": {
+      "description": "Nghe nhẹ nhàng khi thư giãn",
+      "listOfSongIds": [
+        "song_4",
+        "song_5",
+        "song_10"
+      ],
+      "playlistName": "Chill Tối Cuối Tuần"
+    }
+  },
+  "Favourites": {
+    "lequanghuy278@gmail_com": {
+      "songId": "song_1",
+      "addedDate": "2025-04-10"
+    },
+    "ngonam2k4@gmail_com": {
+      "songId": "song_2",
+      "addedDate": "2025-04-10"
+    }
+  },
+  "Banners": {
+    "bn_1": {
       "coverUrl": "https://drive.google.com/uc?export=download&id=1l3dkQcjzp8AH5L75X-KxGjEW_dWpNuAM",
-      "fileUrl": "https://drive.google.com/uc?export=download&id=1Rhw7_MG_ocVS89tYIFe_VTb9GC04rDiR"
+      "featuredSongId": "song_1",
+      "title": "Bài hát nổi bật"
     },
-    "song_2": {
-      "title": "Making A Lover",
-      "artist": "SS501",
-      "lyrics": null,
-      "duration": "3:12",
-      "coverUrl": "https://drive.google.com/uc?export=download&id=1zRu2peIdEqdYBWedx8pPz1fERivIWSq_",
-      "fileUrl": "https://drive.google.com/uc?export=download&id=1tikNN1nNO06mlsPFGtAmAUWiBycKUXHI"
-    },
-    "song_3": {
-      "title": "Ngày mai người ta lấy chồng",
-      "artist": "ThanhDat",
-      "lyrics": null,
-      "duration": "6:02",
+    "bn_2": {
       "coverUrl": "https://drive.google.com/uc?export=download&id=1BZt8xDLtnhNvooi8T_yxGKCPaF4hn4ZJ",
-      "fileUrl": "https://drive.google.com/uc?export=download&id=1XJ1lCOTfCv1AFxs-eqz3HMZXX5T_3O3j"
+      "featuredSongId": "song_3",
+      "title": "Hit mới nhất"
     },
-    "song_4": {
-      "title": "Mất kết nối",
-      "artist": "DuongDomic",
-      "lyrics": null,
-      "duration": "3:28",
-      "coverUrl": "https://drive.google.com/uc?export=download&id=1eDgFcg-MTvxbR8EGYVc0pOnI77wcweo8",
-      "fileUrl": "https://drive.google.com/uc?export=download&id=18xJMAf4SaE7Eymnwg3c99H979Pyyvi9N"
-    },
-    "song_5": {
-      "title": "Hứa nhưng chẳng tới",
-      "artist": "LamTuan",
-      "lyrics": null,
-      "duration": "5:59",
-      "coverUrl": "https://drive.google.com/uc?export=download&id=13x2OPy4IYC95gIuReK6xjAzw3SmCsQ65",
-      "fileUrl": "https://drive.google.com/uc?export=download&id=1ZmgoXT4DKOiRvOUuO6ILHftwtSw7p1oh"
-    },
-    "song_6": {
-      "title": "Hoa nở không màu",
-      "artist": "HoaiLam",
-      "lyrics": null,
-      "duration": "5:28",
-      "coverUrl": "https://drive.google.com/uc?export=download&id=1hOufPcIlaM09OCrrR-qLJehGs-9LQx-Y",
-      "fileUrl": "https://drive.google.com/uc?export=download&id=1BBsZEc94Vb-rZ81yDsYjosappYZYcXZE"
-    },
-    "song_7": {
-      "title": "Em là không thể",
-      "artist": "AnhQuanIdol",
-      "lyrics": null,
-      "duration": "5:10",
-      "coverUrl": "https://drive.google.com/uc?export=download&id=1N-HIEjK8PiH02O8mubwBzREr2DK9S1WR",
-      "fileUrl": "https://drive.google.com/uc?export=download&id=1e0Ay45Hmksti1TOb4MmyMbzHn0VBww_u"
-    },
-    "song_8": {
-      "title": "Dù cho tận thế",
-      "artist": "Erik",
-      "lyrics": null,
-      "duration": "3:53",
-      "coverUrl": "https://drive.google.com/uc?export=download&id=1i1d1FTirRxn_CBWtKNqYkphwO7e2n8YZ",
-      "fileUrl": "https://drive.google.com/uc?export=download&id=1-D-_QzcZTjlT-DihRF12krmphKypNW0o"
-    },
-    "song_9": {
-      "title": "Cạn tình như thế",
-      "artist": "ThanhDat",
-      "lyrics": null,
-      "duration": "4:56",
-      "coverUrl": "https://drive.google.com/uc?export=download&id=1j4NfdSmQqNYP3pHUmCF4xao6tWlkdHUq",
-      "fileUrl": "https://drive.google.com/uc?export=download&id=1sqn8DjbobHo6tMYqaNb8BVyGdnnrq3xd"
-    },
-    "song_10": {
-      "title": "Cẩm tú cầu",
-      "artist": "Huỳnh Văn",
-      "lyrics": null,
-      "duration": "4:26",
-      "coverUrl": "https://drive.google.com/uc?export=download&id=1WdhnfQy1PXAvVnwqEfRr8tpQvISzP383",
-      "fileUrl": "https://drive.google.com/uc?export=download&id=1Q-iFxS1AAeJUfXlseV7J3lYnQI0BQClw"
-    },
-    "song_11": {
-      "title": "Âm thầm bên em",
-      "artist": "Sơn Tùng",
-      "lyrics": null,
-      "duration": "4:51",
-      "coverUrl": "https://drive.google.com/uc?export=download&id=1Fw57K9rad8htMN5SOxzG04N9S5uDf4QT",
-      "fileUrl": "https://drive.google.com/uc?export=download&id=15AKEe-yH0l5Z6fsKLUo9C4g0zFnDv0n-"
+    "bn_3": {
+      "coverUrl": "https://drive.google.com/uc?export=download&id=1zRu2peIdEqdYBWedx8pPz1fERivIWSq_",
+      "featuredSongId": "song_2",
+      "title": "OST Hàn Quốc"
+    }
+  },
+  "FavouritesPlaylist": {
+    "ngonam2k4@gmail_com": {
+      "playlistId": "pl_1",
+      "addedDate": 1744277655714
     }
   }
 }

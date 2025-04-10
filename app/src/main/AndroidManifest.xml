@@ -32,6 +32,8 @@
             android:name=".RegisterLoginActivity"
             android:exported="true"
             android:theme="@style/Theme.MyApplication" />
+        
+        <activity android:name=".PlaylistDetailActivity" />
 
         <activity
             android:name=".MainActivity"

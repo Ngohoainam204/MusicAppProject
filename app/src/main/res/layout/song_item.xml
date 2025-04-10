@@ -22,7 +22,7 @@
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:scaleType="centerCrop"
-            android:background="@android:color/transparent"
+            android:background="@drawable/rounded_corner_bg"
             android:adjustViewBounds="true" />
 
         <!-- Chi tiết bài hát -->

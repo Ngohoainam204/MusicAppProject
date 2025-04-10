@@ -3,51 +3,59 @@ package com.example.myapplication.models;
 import java.util.List;
 
 public class Playlist {
-    private String playlistId;
-    private String name;
-    private String userId; // owner
-    private List<String> songIds; // songId list
+    private String id;
+    private String playlistName; // ⚠️ quan trọng!
+    private String imageUrl;
+    private List<String> listOfSongIds;
 
     public Playlist() {
     }
 
-    public Playlist(String playlistId, String name, String userId, List<String> songIds) {
-        this.playlistId = playlistId;
-        this.name = name;
-        this.userId = userId;
-        this.songIds = songIds;
+    public Playlist(String id, String playlistName, String imageUrl, List<String> listOfSongIds) {
+        this.id = id;
+        this.playlistName = playlistName;
+        this.imageUrl = imageUrl;
+        this.listOfSongIds = listOfSongIds;
     }
 
-    // Getters and Setters
-    public String getPlaylistId() {
-        return playlistId;
+    public void setPlaylistId(String id) {
+        this.id = id;
     }
 
-    public void setPlaylistId(String playlistId) {
-        this.playlistId = playlistId;
+    public void setFavourite(boolean fav) {
+        // Optional: nếu bạn có biến isFavourite
     }
 
-    public String getName() {
-        return name;
+
+    public String getId() {
+        return id;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public String getPlaylistName() {
+        return playlistName;
     }
 
-    public String getUserId() {
-        return userId;
+    public String getImageUrl() {
+        return imageUrl;
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
+    public List<String> getListOfSongIds() {
+        return listOfSongIds;
     }
 
-    public List<String> getSongIds() {
-        return songIds;
+    public void setId(String id) {
+        this.id = id;
     }
 
-    public void setSongIds(List<String> songIds) {
-        this.songIds = songIds;
+    public void setPlaylistName(String playlistName) {
+        this.playlistName = playlistName;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
+    public void setListOfSongIds(List<String> listOfSongIds) {
+        this.listOfSongIds = listOfSongIds;
     }
 }

@@ -29,8 +29,6 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class SongsFragment extends Fragment {
     private static final String TAG = "SongsFragment";
@@ -57,7 +55,6 @@ public class SongsFragment extends Fragment {
         songAdapter = new SongAdapter(getContext(), filteredList);
         recyclerView.setAdapter(songAdapter);
 
-        // Sử dụng đúng URL region
         songsRef = FirebaseDatabase.getInstance(FIREBASE_DB_URL)
                 .getReference("Songs");
 
@@ -100,7 +97,10 @@ public class SongsFragment extends Fragment {
                             Song song = item.getValue(Song.class);
                             if (song != null) {
                                 song.setSongId(item.getKey());
-                                song.setFileUrl(convertDriveUrl(song.getFileUrl()));
+
+                                // Chuyển fileUrl sang link Cloudinary hợp lệ
+                                song.setFileUrl(getStreamableUrl(song.getFileUrl(), song.getTitle()));
+
                                 if (favSnapshot.hasChild(song.getSongId())) {
                                     song.setFavourite(true);
                                 }
@@ -143,10 +143,27 @@ public class SongsFragment extends Fragment {
         songAdapter.notifyDataSetChanged();
     }
 
-    private String convertDriveUrl(String url) {
-        if (url == null) return url;
-        Pattern pattern = Pattern.compile("[-\\w]{25,}");
-        Matcher matcher = pattern.matcher(url);
-        return matcher.find() ? "https://drive.google.com/uc?export=download&id=" + matcher.group() : url;
+    // ✅ Hàm chuyển link stream Cloudinary đúng định dạng public
+    private String getStreamableUrl(String originalUrl, String title) {
+        if (originalUrl != null && originalUrl.contains("res.cloudinary.com") && originalUrl.endsWith(".mp3")) {
+            return originalUrl;
+        }
+
+        if (title != null && !title.isEmpty()) {
+            String fileName = normalizeTitleToFilename(title);
+            return "https://res.cloudinary.com/dvkypaemi/raw/upload/SongList/" + fileName;
+        }
+
+        return originalUrl;
+    }
+
+    // ✅ Chuyển tiêu đề thành tên file chuẩn không dấu
+    private String normalizeTitleToFilename(String title) {
+        String fileName = title.toLowerCase()
+                .replace("đ", "d")
+                .replaceAll("[^a-z0-9\\s]", "") // xóa ký tự đặc biệt
+                .trim()
+                .replaceAll("\\s+", "_");      // thay khoảng trắng bằng _
+        return fileName + ".mp3";
     }
 }
