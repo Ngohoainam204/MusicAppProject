@@ -3,7 +3,7 @@
 
     <item
         android:id="@+id/menu_item_home"
-        android:icon="@drawable/ic_home"
+        android:icon="@drawable/home_icon_silhouette"
         android:title="Home" />
     <item
         android:id="@+id/menu_item_song"
@@ -11,7 +11,7 @@
         android:title="Song" />
     <item
         android:id="@+id/menu_item_favourite"
-        android:icon="@drawable/ic_library"
+        android:icon="@drawable/music_note"
         android:title="Library" />
     <item
         android:id="@+id/menu_item_setting"

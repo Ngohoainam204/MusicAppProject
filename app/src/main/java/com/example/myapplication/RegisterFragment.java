@@ -20,7 +20,7 @@ import com.google.firebase.auth.FirebaseUser;
 
 public class RegisterFragment extends Fragment {
 
-    private EditText edtUsername, edtEmail, edtPassword, edtRePassword;
+    private EditText  edtEmail, edtPassword, edtRePassword;
     private ImageView togglePassword, toggleRePassword;
     private Button btnRegister;
     private TextView btnLoginNow;
@@ -41,7 +41,6 @@ public class RegisterFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_register, container, false);
 
         // Ánh xạ view
-        edtUsername = view.findViewById(R.id.editTextUsername);
         edtEmail = view.findViewById(R.id.edtEmail);
         edtPassword = view.findViewById(R.id.edtPassword);
         edtRePassword = view.findViewById(R.id.editTextPassword);
@@ -83,13 +82,12 @@ public class RegisterFragment extends Fragment {
 
         // Nút đăng ký
         btnRegister.setOnClickListener(v -> {
-            String username = edtUsername.getText().toString().trim();
             String email = edtEmail.getText().toString().trim();
             String password = edtPassword.getText().toString().trim();
             String rePassword = edtRePassword.getText().toString().trim();
 
             // Kiểm tra trường hợp nhập thông tin
-            if (username.isEmpty() || email.isEmpty() || password.isEmpty() || rePassword.isEmpty()) {
+            if (email.isEmpty() || password.isEmpty() || rePassword.isEmpty()) {
                 Toast.makeText(getContext(), "Please fill in all fields", Toast.LENGTH_SHORT).show();
                 return;
             }

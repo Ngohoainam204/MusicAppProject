@@ -70,6 +70,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp">
 
+            <!-- Icon ẩn/hiện password -->
             <EditText
                 android:id="@+id/editTextPassword"
                 android:layout_width="match_parent"
@@ -79,10 +80,9 @@
                 android:inputType="textPassword"
                 android:paddingStart="16dp"
                 android:paddingEnd="48dp"
-                android:textColorHint="#757575"
-                android:textColor="#000000"/>
+                android:textColor="#000000"
+                android:textColorHint="#757575" />
 
-            <!-- Icon ẩn/hiện password -->
             <ImageView
                 android:id="@+id/togglePassword"
                 android:layout_width="24dp"
@@ -128,6 +128,27 @@
             android:background="@drawable/rounded_button_purple"
             android:textAllCaps="false"
             android:layout_marginTop="24dp"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Or sign in with"
+            android:textSize="16sp"
+            android:textColor="#757575"
+            android:layout_marginTop="24dp"/>
+
+        <ImageView
+            android:id="@+id/imgGoogleSignIn"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:src="@drawable/google"
+            android:background="@drawable/bg_google_button"
+            android:scaleType="centerInside"
+            android:layout_marginTop="16dp"
+            android:contentDescription="Sign in with Google"
+            android:clickable="true"
+            android:focusable="true"/>
+
+
 
 
 

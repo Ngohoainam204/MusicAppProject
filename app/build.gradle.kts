@@ -36,6 +36,8 @@ android {
 }
 
 dependencies {
+    implementation ("com.google.android.material:material:1.11.0") // hoặc phiên bản mới nhất
+
     implementation(libs.glide)
     implementation("com.tbuonomo:dotsindicator:4.3")
     implementation("androidx.media3:media3-exoplayer:1.6.0")
@@ -46,10 +48,12 @@ dependencies {
     implementation("androidx.credentials:credentials:1.3.0")
     implementation("androidx.credentials:credentials-play-services-auth:1.3.0")
     implementation("com.google.android.libraries.identity.googleid:googleid:1.1.1")
+
     // Firebase Services
     implementation("com.google.firebase:firebase-analytics-ktx")
     implementation("com.google.firebase:firebase-auth-ktx")
     implementation("com.google.firebase:firebase-database-ktx")
+    implementation ("com.google.android.gms:play-services-auth:21.0.0")
 
     // Networking
     implementation(libs.retrofit)
