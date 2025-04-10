@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
@@ -16,11 +17,10 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="tiramisu">
 
-        <!-- StartedActivity là màn hình đầu tiên -->
+        <!-- SplashActivity là màn hình khởi động -->
         <activity
-            android:name=".StartedActivity"
+            android:name=".SplashActivity"
             android:exported="true"
-            android:label="Flexible"
             android:theme="@style/Theme.MyApplication">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -28,11 +28,12 @@
             </intent-filter>
         </activity>
 
+
         <activity
             android:name=".RegisterLoginActivity"
             android:exported="true"
             android:theme="@style/Theme.MyApplication" />
-        
+
         <activity android:name=".PlaylistDetailActivity" />
 
         <activity
@@ -45,10 +46,8 @@
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
-
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-
                 <data
                     android:host="callback"
                     android:scheme="your-app-scheme" />
