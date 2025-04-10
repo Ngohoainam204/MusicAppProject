@@ -18,7 +18,7 @@
 
         <!-- StartedActivity là màn hình đầu tiên -->
         <activity
-            android:name=".StartedActivity"
+            android:name=".RegisterLoginActivity"
             android:exported="true"
             android:label="Flexible"
             android:theme="@style/Theme.MyApplication">
@@ -28,11 +28,7 @@
             </intent-filter>
         </activity>
 
-        <activity
-            android:name=".RegisterLoginActivity"
-            android:exported="true"
-            android:theme="@style/Theme.MyApplication" />
-        
+
         <activity android:name=".PlaylistDetailActivity" />
 
         <activity

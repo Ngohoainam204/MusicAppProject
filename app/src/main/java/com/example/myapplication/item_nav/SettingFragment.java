@@ -14,7 +14,7 @@ import androidx.fragment.app.Fragment;
 import com.example.myapplication.ChangePasswordActivity;
 import com.example.myapplication.LoginFragment;
 import com.example.myapplication.R;
-import com.example.myapplication.StartedActivity;
+import com.example.myapplication.RegisterLoginActivity;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -63,7 +63,7 @@ public class SettingFragment extends Fragment {
 
             mGoogleSignInClient.signOut().addOnCompleteListener(task -> {
                 // Mở lại GetStartedActivity
-                Intent intent = new Intent(getActivity(), StartedActivity.class);
+                Intent intent = new Intent(getActivity(), RegisterLoginActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
                 requireActivity().finish(); // Kết thúc Activity hiện tại

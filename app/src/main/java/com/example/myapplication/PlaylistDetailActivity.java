@@ -19,7 +19,7 @@ public class PlaylistDetailActivity extends AppCompatActivity {
         String playlistId = getIntent().getStringExtra(EXTRA_PLAYLIST_ID);
         String playlistName = getIntent().getStringExtra(EXTRA_PLAYLIST_NAME);
 
-        TextView title = findViewById(R.id.txt_detail_title);
+        TextView title = findViewById(R.id.txt_playlist_title);
         title.setText(playlistName + " (" + playlistId + ")");
 
         // TODO: load list of songs từ Firebase theo playlistId và hiển thị bằng RecyclerView
