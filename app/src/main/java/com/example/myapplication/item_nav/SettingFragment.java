@@ -11,14 +11,18 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.example.myapplication.ChangePasswordActivity;
 import com.example.myapplication.LoginFragment;
 import com.example.myapplication.R;
 import com.example.myapplication.StartedActivity;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.firebase.auth.FirebaseAuth;
 
 public class SettingFragment extends Fragment {
 
-    private Button btnAddAccount, btnLogout;
+    private Button btnAddAccount, btnLogout, btnChangepw;
 
     public SettingFragment() {
         // Required empty public constructor
@@ -36,6 +40,7 @@ public class SettingFragment extends Fragment {
 
         btnAddAccount = view.findViewById(R.id.btnAddAccount);
         btnLogout = view.findViewById(R.id.btnLogout);
+        btnChangepw = view.findViewById(R.id.btnChangePassword);
 
         // Sự kiện cho nút Add new account
         btnAddAccount.setOnClickListener(v -> {
@@ -45,15 +50,29 @@ public class SettingFragment extends Fragment {
                     .commit();
         });
 
-        // Sự kiện cho nút Log out
         btnLogout.setOnClickListener(v -> {
-            FirebaseAuth.getInstance().signOut(); // Đăng xuất khỏi Firebase nếu có
+            // Đăng xuất khỏi Firebase
+            FirebaseAuth.getInstance().signOut();
 
-            // Mở lại GetStartedActivity
-            Intent intent = new Intent(getActivity(), StartedActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(intent);
-            requireActivity().finish(); // Kết thúc Activity hiện tại
+            // Đăng xuất khỏi Google
+            GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                    .requestIdToken(getString(R.string.default_web_client_id)) // giống như cấu hình đăng nhập
+                    .requestEmail()
+                    .build();
+            GoogleSignInClient mGoogleSignInClient = GoogleSignIn.getClient(requireContext(), gso);
+
+            mGoogleSignInClient.signOut().addOnCompleteListener(task -> {
+                // Mở lại GetStartedActivity
+                Intent intent = new Intent(getActivity(), StartedActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+                requireActivity().finish(); // Kết thúc Activity hiện tại
+            });
         });
+        btnChangepw.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), ChangePasswordActivity.class);
+            startActivity(intent);
+        });
+
     }
 }

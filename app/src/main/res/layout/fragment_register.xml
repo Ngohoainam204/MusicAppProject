@@ -52,19 +52,7 @@
             android:textStyle="bold"
             android:layout_marginTop="8dp"/>
 
-        <!-- Ô nhập Username -->
-        <EditText
-            android:id="@+id/editTextUsername"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:background="@drawable/rounded_edittext"
-            android:hint="Enter Username"
-            android:inputType="text"
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp"
-            android:textColorHint="#757575"
-            android:textColor="#000000"
-            android:layout_marginTop="24dp"/>
+
 
         <EditText
             android:id="@+id/edtEmail"
@@ -150,6 +138,9 @@
             android:background="@drawable/rounded_button_purple"
             android:textAllCaps="false"
             android:layout_marginTop="24dp" />
+
+
+
 
         <!-- Đăng ký tài khoản mới -->
         <LinearLayout
