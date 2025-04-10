@@ -7,7 +7,44 @@
     android:background="@color/white"
     android:padding="16dp">
 
-    <!-- Search bar -->
+    <!-- Avatar -->
+    <ImageView
+        android:id="@+id/imgAvatar"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:layout_marginTop="16dp"
+        android:src="@drawable/ic_profile"
+        android:scaleType="centerCrop"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <!-- Search Icon -->
+    <ImageView
+        android:id="@+id/btnSearchIcon"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:src="@drawable/ic_search"
+        android:contentDescription="Search Icon"
+        android:padding="4dp"
+        app:layout_constraintTop_toTopOf="@id/imgAvatar"
+        app:layout_constraintBottom_toBottomOf="@id/imgAvatar"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- Username -->
+    <TextView
+        android:id="@+id/tvUsername"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Username"
+        android:textColor="#000"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:layout_marginStart="12dp"
+        app:layout_constraintStart_toEndOf="@id/imgAvatar"
+        app:layout_constraintBottom_toBottomOf="@id/imgAvatar"
+        app:layout_constraintTop_toTopOf="@id/imgAvatar" />
+
+    <!-- Search bar (ẩn ban đầu) -->
     <LinearLayout
         android:id="@+id/searchBar"
         android:layout_width="0dp"
@@ -16,9 +53,11 @@
         android:orientation="horizontal"
         android:padding="8dp"
         android:gravity="center_vertical"
-        app:layout_constraintTop_toTopOf="parent"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/imgAvatar"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="8dp">
 
         <ImageView
             android:layout_width="24dp"
@@ -34,30 +73,6 @@
             android:layout_marginStart="8dp" />
     </LinearLayout>
 
-    <!-- Avatar & Username -->
-    <ImageView
-        android:id="@+id/imgAvatar"
-        android:layout_width="64dp"
-        android:layout_height="64dp"
-        android:layout_marginTop="16dp"
-        android:src="@drawable/ic_profile"
-        android:scaleType="centerCrop"
-        app:layout_constraintTop_toBottomOf="@id/searchBar"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <TextView
-        android:id="@+id/tvUsername"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Username"
-        android:textColor="#000"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        android:layout_marginStart="12dp"
-        app:layout_constraintStart_toEndOf="@id/imgAvatar"
-        app:layout_constraintBottom_toBottomOf="@id/imgAvatar"
-        app:layout_constraintTop_toTopOf="@id/imgAvatar" />
-
     <!-- Title -->
     <TextView
         android:id="@+id/tvFavouriteTitle"
@@ -66,7 +81,7 @@
         android:text="Library"
         android:textSize="22sp"
         android:textStyle="bold"
-        app:layout_constraintTop_toBottomOf="@id/imgAvatar"
+        app:layout_constraintTop_toBottomOf="@id/searchBar"
         app:layout_constraintStart_toStartOf="parent"
         android:layout_marginTop="16dp" />
 

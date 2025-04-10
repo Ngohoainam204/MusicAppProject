@@ -107,7 +107,6 @@ public class NowPlayingActivity extends AppCompatActivity {
                 loadCurrentSongData();
             } else if (songList.isEmpty()) {
                 Log.w(TAG, "onCreate - songList đang trống.");
-                Toast.makeText(this, "Đang tải danh sách bài hát...", Toast.LENGTH_SHORT).show();
             } else if (currentSongId == null) {
                 Log.w(TAG, "onCreate - currentSongId từ Intent là null.");
                 if (!songList.isEmpty()) {

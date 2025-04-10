@@ -34,7 +34,7 @@
             android:exported="true"
             android:theme="@style/Theme.MyApplication" />
 
-        <activity android:name=".PlaylistDetailActivity" />
+        <activity android:name=".nowplaying.PlaylistDetailActivity" />
 
         <activity
             android:name=".ChangePasswordActivity"
@@ -46,8 +46,10 @@
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+
                 <data
                     android:host="callback"
                     android:scheme="your-app-scheme" />

@@ -46,10 +46,23 @@ public class LibraryFragment extends Fragment {
                             break;
                         case 3:
                             tab.setText("Songs");
-                            break; // Favourites!
+                            break;
                     }
                 }).attach();
 
+        // 👉 Thêm logic ẩn/hiện thanh tìm kiếm
+        View searchBar = view.findViewById(R.id.searchBar);
+        View btnSearchIcon = view.findViewById(R.id.btnSearchIcon);
+
+        btnSearchIcon.setOnClickListener(v -> {
+            if (searchBar.getVisibility() == View.GONE) {
+                searchBar.setVisibility(View.VISIBLE);
+            } else {
+                searchBar.setVisibility(View.GONE);
+            }
+        });
+
         return view;
     }
+
 }

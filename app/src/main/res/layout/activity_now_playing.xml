@@ -33,6 +33,20 @@
     <!-- Album Art -->
 
     <!-- Song Title và Favorite Icon -->
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:layout_marginStart="68dp"
+        android:layout_marginTop="8dp"
+        android:padding="6dp"
+        android:src="@drawable/ic_more_vert"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/tvNowPlaying"
+        app:layout_constraintTop_toTopOf="parent"
+        app:tint="@color/black" />
+
     <ImageView
         android:id="@+id/imgCover"
         android:layout_width="317dp"

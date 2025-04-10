@@ -37,9 +37,9 @@ public class FavouriteSongsFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_favourite_songs, container, false);
 
-
         rvFavouriteSongs = view.findViewById(R.id.rvFavouriteSongs);
         rvFavouriteSongs.setLayoutManager(new LinearLayoutManager(getContext()));
+
         songAdapter = new SongAdapter(getContext(), favouriteSongs);
         rvFavouriteSongs.setAdapter(songAdapter);
 

@@ -6,7 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
-import com.example.myapplication.item_nav.SongsFragment;
+import com.example.myapplication.item_nav.Search_Fragment;
 import com.example.myapplication.item_nav.LibraryFragment;
 import com.example.myapplication.item_nav.HomeFragment;
 import com.example.myapplication.item_nav.SettingFragment;
@@ -35,7 +35,7 @@ public class MainActivity extends AppCompatActivity {
                 if (item.getItemId() == R.id.menu_item_home) {
                     selectedFragment = new HomeFragment();
                 } else if (item.getItemId() == R.id.menu_item_song) {
-                    selectedFragment = new SongsFragment();
+                    selectedFragment = new Search_Fragment();
                 } else if (item.getItemId() == R.id.menu_item_favourite) {
                     selectedFragment = new LibraryFragment();
                 } else if (item.getItemId() == R.id.menu_item_setting) {

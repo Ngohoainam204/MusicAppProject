@@ -1,9 +1,15 @@
 package com.example.myapplication.item_nav;
 
+import static android.content.ContentValues.TAG;
+
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -11,6 +17,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 
+import com.bumptech.glide.Glide;
 import com.example.myapplication.R;
 import com.example.myapplication.adapters.BannerAdapter;
 import com.example.myapplication.adapters.PlaylistAdapter;
@@ -76,7 +83,7 @@ public class HomeFragment extends Fragment {
         );
         recyclerPlaylist.setAdapter(playlistAdapter);
 
-        // Load dữ liệu đúng thứ tự
+        // Load dữ liệu theo đúng thứ tự: songMap -> playlist -> favourite
         loadSongsFromFirebase(() -> {
             loadPlaylists();
             loadFavouritePlaylists();
@@ -113,28 +120,26 @@ public class HomeFragment extends Fragment {
                 songMap.clear();
                 for (DataSnapshot songSnap : snapshot.getChildren()) {
                     Song song = songSnap.getValue(Song.class);
-                    String songId = songSnap.getKey(); // LẤY ID TỪ KEY NODE
+                    String songId = songSnap.getKey();
                     if (song != null && songId != null) {
-                        song.setSongId(songId); // Gán thủ công
+                        song.setSongId(songId);
                         songMap.put(songId, song);
                     }
                 }
 
-
-                System.out.println("✅ SongMap loaded: " + songMap.keySet());
-
-                // 🛠 FIX QUAN TRỌNG: cập nhật adapter sau khi có songMap
-                playlistAdapter.notifyDataSetChanged();
+                Log.d(TAG, "✅ SongMap loaded. Keys: " + songMap.keySet());
+                playlistAdapter.setSongMap(songMap); // Đảm bảo gọi ở đây
 
                 if (onLoaded != null) onLoaded.run();
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
+                Log.e(TAG, "Lỗi tải bài hát: " + error.getMessage());
+                Toast.makeText(getContext(), "Lỗi tải bài hát.", Toast.LENGTH_SHORT).show();
             }
         });
     }
-
 
     private void loadPlaylists() {
         playlistRef.addValueEventListener(new ValueEventListener() {
@@ -148,7 +153,6 @@ public class HomeFragment extends Fragment {
                     if (playlist != null) {
                         playlist.setId(item.getKey());
 
-                        // Ép listOfSongIds nếu bị null
                         if (playlist.getListOfSongIds() == null || playlist.getListOfSongIds().isEmpty()) {
                             List<String> songIds = new ArrayList<>();
                             for (DataSnapshot songIdSnap : item.child("listOfSongIds").getChildren()) {
@@ -160,16 +164,17 @@ public class HomeFragment extends Fragment {
                             playlist.setListOfSongIds(songIds);
                         }
 
+                        // Lấy ảnh bìa của bài hát đầu tiên nếu có
+                        if (playlist.getListOfSongIds() != null && !playlist.getListOfSongIds().isEmpty()) {
+                            String firstSongId = playlist.getListOfSongIds().get(0);
+                            if (songMap.containsKey(firstSongId) && songMap.get(firstSongId).getCoverUrl() != null) {
+                                playlist.setImageUrl(songMap.get(firstSongId).getCoverUrl());
+                            }
+                        }
                         playlistList.add(playlist);
                     }
                 }
-
                 playlistAdapter.notifyDataSetChanged();
-
-                for (Playlist p : playlistList) {
-                    System.out.println("🎧 Playlist: " + p.getPlaylistName() + " | Songs: " +
-                            (p.getListOfSongIds() != null ? p.getListOfSongIds().size() : 0));
-                }
             }
 
             @Override
