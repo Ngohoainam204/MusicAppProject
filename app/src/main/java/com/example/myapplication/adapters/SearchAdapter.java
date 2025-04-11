@@ -1,7 +1,6 @@
 package com.example.myapplication.adapters;
 
 import android.content.Context;
-import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,14 +15,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.myapplication.R;
 import com.example.myapplication.Search.SearchItem;
+import com.example.myapplication.models.Album;
+import com.example.myapplication.models.Artist;
 import com.example.myapplication.models.Playlist;
 import com.example.myapplication.models.Song;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.database.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,11 +32,14 @@ public class SearchAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     private final List<SearchItem> filteredItems;
     private static final String DB_URL = "https://musicplayerapp-aed33-default-rtdb.asia-southeast1.firebasedatabase.app";
 
-    // Listener
     public interface OnItemClickListener {
         void onSongClick(Song song);
 
         void onPlaylistClick(Playlist playlist);
+
+        void onAlbumClick(Album album);
+
+        void onArtistClick(Artist artist);
     }
 
     private OnItemClickListener listener;
@@ -74,22 +74,36 @@ public class SearchAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(context);
-        if (viewType == SearchItem.TYPE_SONG) {
-            View view = inflater.inflate(R.layout.song_item, parent, false);
-            return new SongViewHolder(view);
-        } else {
-            View view = inflater.inflate(R.layout.playlist_item, parent, false);
-            return new PlaylistViewHolder(view);
+        switch (viewType) {
+            case SearchItem.TYPE_SONG:
+                return new SongViewHolder(inflater.inflate(R.layout.song_item, parent, false));
+            case SearchItem.TYPE_PLAYLIST:
+                return new PlaylistViewHolder(inflater.inflate(R.layout.playlist_item, parent, false));
+            case SearchItem.TYPE_ALBUM:
+                return new AlbumViewHolder(inflater.inflate(R.layout.album_item, parent, false));
+            case SearchItem.TYPE_ARTIST:
+                return new ArtistViewHolder(inflater.inflate(R.layout.artist_item, parent, false));
+            default:
+                throw new IllegalArgumentException("Unknown viewType: " + viewType);
         }
     }
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         SearchItem item = filteredItems.get(position);
-        if (item.getType() == SearchItem.TYPE_SONG) {
-            ((SongViewHolder) holder).bind(((SearchItem.SongItem) item).getSong());
-        } else {
-            ((PlaylistViewHolder) holder).bind(((SearchItem.PlaylistItem) item).getPlaylist());
+        switch (item.getType()) {
+            case SearchItem.TYPE_SONG:
+                ((SongViewHolder) holder).bind(((SearchItem.SongItem) item).getSong());
+                break;
+            case SearchItem.TYPE_PLAYLIST:
+                ((PlaylistViewHolder) holder).bind(((SearchItem.PlaylistItem) item).getPlaylist());
+                break;
+            case SearchItem.TYPE_ALBUM:
+                ((AlbumViewHolder) holder).bind(((SearchItem.AlbumItem) item).getAlbum());
+                break;
+            case SearchItem.TYPE_ARTIST:
+                ((ArtistViewHolder) holder).bind(((SearchItem.ArtistItem) item).getArtist());
+                break;
         }
     }
 
@@ -98,19 +112,9 @@ public class SearchAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         if (query == null || query.trim().isEmpty()) {
             filteredItems.addAll(originalItems);
         } else {
-            String lower = query.toLowerCase();
             for (SearchItem item : originalItems) {
-                if (item.getType() == SearchItem.TYPE_SONG) {
-                    Song song = ((SearchItem.SongItem) item).getSong();
-                    if (song != null && (song.getTitle().toLowerCase().contains(lower) ||
-                            song.getArtist().toLowerCase().contains(lower))) {
-                        filteredItems.add(item);
-                    }
-                } else {
-                    Playlist playlist = ((SearchItem.PlaylistItem) item).getPlaylist();
-                    if (playlist != null && playlist.getPlaylistName().toLowerCase().contains(lower)) {
-                        filteredItems.add(item);
-                    }
+                if (item.matches(query)) {
+                    filteredItems.add(item);
                 }
             }
         }
@@ -123,11 +127,8 @@ public class SearchAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         filter("");
     }
 
-    // -----------------------
-    // ViewHolder for Song
-    // -----------------------
     class SongViewHolder extends RecyclerView.ViewHolder {
-        private final TextView tvTitle, tvArtist;
+        private final TextView tvTitle, tvArtist, tvDuration;
         private final ImageView ivCover, ivFavourite;
 
         public SongViewHolder(@NonNull View itemView) {
@@ -136,6 +137,7 @@ public class SearchAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             tvArtist = itemView.findViewById(R.id.tv_song_artist);
             ivCover = itemView.findViewById(R.id.img_song_cover);
             ivFavourite = itemView.findViewById(R.id.ivFavourite);
+            tvDuration = itemView.findViewById(R.id.tv_song_duration);
         }
 
         public void bind(Song song) {
@@ -143,33 +145,29 @@ public class SearchAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
             tvTitle.setText(song.getTitle());
             tvArtist.setText(song.getArtist());
-            Glide.with(context)
-                    .load(song.getCoverUrl())
-                    .placeholder(R.drawable.music)
-                    .into(ivCover);
+            tvDuration.setText(song.getDuration());
+            Glide.with(context).load(song.getCoverUrl()).placeholder(R.drawable.music).into(ivCover);
 
-            FirebaseAuth auth = FirebaseAuth.getInstance();
-            DatabaseReference favoritesRef = FirebaseDatabase.getInstance(DB_URL).getReference("FavouritesSongs");
-            String userId = auth.getCurrentUser() != null ? auth.getCurrentUser().getEmail().replace(".", "_") : null;
+            String userId = FirebaseAuth.getInstance().getCurrentUser() != null ?
+                    FirebaseAuth.getInstance().getCurrentUser().getEmail().replace(".", "_") : null;
 
             if (userId != null) {
-                favoritesRef.child(userId).child(song.getSongId())
-                        .addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                boolean isFavorite = snapshot.exists();
-                                updateFavoriteIcon(isFavorite);
+                DatabaseReference favRef = FirebaseDatabase.getInstance(DB_URL).getReference("FavouritesSongs")
+                        .child(userId).child(song.getSongId());
 
-                                ivFavourite.setOnClickListener(v -> {
-                                    toggleFavorite(song, isFavorite);
-                                });
-                            }
+                favRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        boolean isFavorite = snapshot.exists();
+                        updateFavoriteIcon(isFavorite);
+                        ivFavourite.setOnClickListener(v -> toggleFavorite(song, isFavorite));
+                    }
 
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError error) {
-                                Log.e("SearchAdapter", "Favorite check failed: " + error.getMessage());
-                            }
-                        });
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                        Log.e("SearchAdapter", "Favorite check failed: " + error.getMessage());
+                    }
+                });
             } else {
                 ivFavourite.setOnClickListener(v -> {
                     Toast.makeText(context, "Bạn cần đăng nhập để yêu thích bài hát", Toast.LENGTH_SHORT).show();
@@ -177,48 +175,33 @@ public class SearchAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             }
 
             itemView.setOnClickListener(v -> {
-                if (listener != null) {
-                    listener.onSongClick(song);
-                }
+                if (listener != null) listener.onSongClick(song);
             });
         }
 
         private void updateFavoriteIcon(boolean isFavorite) {
-            ivFavourite.setImageResource(
-                    isFavorite ? R.drawable.ic_heart_selection_true : R.drawable.ic_heart_selection
-            );
+            ivFavourite.setImageResource(isFavorite ? R.drawable.ic_heart_selection_true : R.drawable.ic_heart_selection);
         }
 
         private void toggleFavorite(Song song, boolean currentStatus) {
-            FirebaseAuth auth = FirebaseAuth.getInstance();
-            String userId = auth.getCurrentUser() != null ? auth.getCurrentUser().getEmail().replace(".", "_") : null;
-            DatabaseReference songRef = FirebaseDatabase.getInstance(DB_URL).getReference("FavouritesSongs").child(userId).child(song.getSongId());
+            String userId = FirebaseAuth.getInstance().getCurrentUser().getEmail().replace(".", "_");
+            DatabaseReference ref = FirebaseDatabase.getInstance(DB_URL).getReference("FavouritesSongs")
+                    .child(userId).child(song.getSongId());
 
             if (currentStatus) {
-                songRef.removeValue()
-                        .addOnSuccessListener(aVoid -> {
-                            updateFavoriteIcon(false);
-                            Toast.makeText(context, "Đã xóa khỏi yêu thích", Toast.LENGTH_SHORT).show();
-                        })
-                        .addOnFailureListener(e -> {
-                            Toast.makeText(context, "Lỗi khi xóa khỏi yêu thích", Toast.LENGTH_SHORT).show();
-                        });
+                ref.removeValue().addOnSuccessListener(aVoid -> {
+                    updateFavoriteIcon(false);
+                    Toast.makeText(context, "Đã xóa khỏi yêu thích", Toast.LENGTH_SHORT).show();
+                });
             } else {
-                songRef.setValue(true)
-                        .addOnSuccessListener(aVoid -> {
-                            updateFavoriteIcon(true);
-                            Toast.makeText(context, "Đã thêm vào yêu thích", Toast.LENGTH_SHORT).show();
-                        })
-                        .addOnFailureListener(e -> {
-                            Toast.makeText(context, "Lỗi khi thêm vào yêu thích", Toast.LENGTH_SHORT).show();
-                        });
+                ref.setValue(true).addOnSuccessListener(aVoid -> {
+                    updateFavoriteIcon(true);
+                    Toast.makeText(context, "Đã thêm vào yêu thích", Toast.LENGTH_SHORT).show();
+                });
             }
         }
     }
 
-    // -----------------------
-    // ViewHolder for Playlist
-    // -----------------------
     class PlaylistViewHolder extends RecyclerView.ViewHolder {
         private final TextView tvPlaylistName;
         private final ImageView ivPlaylistCover;
@@ -233,36 +216,97 @@ public class SearchAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             if (playlist == null) return;
 
             tvPlaylistName.setText(playlist.getPlaylistName());
-
             if (playlist.getCoverUrl() != null && !playlist.getCoverUrl().isEmpty()) {
-                Glide.with(context)
-                        .load(playlist.getCoverUrl())
-                        .placeholder(R.drawable.music)
-                        .into(ivPlaylistCover);
+                Glide.with(context).load(playlist.getCoverUrl()).placeholder(R.drawable.music).into(ivPlaylistCover);
             } else {
                 ivPlaylistCover.setImageResource(R.drawable.music);
             }
 
             itemView.setOnClickListener(v -> {
+                if (listener != null) listener.onPlaylistClick(playlist);
+            });
+        }
+    }
+
+    class AlbumViewHolder extends RecyclerView.ViewHolder {
+        private final TextView tvAlbumName;
+        private final ImageView ivAlbumCover;
+
+        public AlbumViewHolder(@NonNull View itemView) {
+            super(itemView);
+            tvAlbumName = itemView.findViewById(R.id.txt_album_name);
+            ivAlbumCover = itemView.findViewById(R.id.img_album);
+        }
+
+        public void bind(Album album) {
+            if (album == null) return;
+
+            tvAlbumName.setText(album.getAlbumName());
+            if (album.getCoverUrl() != null && !album.getCoverUrl().isEmpty()) {
+                Glide.with(context).load(album.getCoverUrl()).placeholder(R.drawable.music).into(ivAlbumCover);
+            } else {
+                ivAlbumCover.setImageResource(R.drawable.music);
+            }
+
+            Log.d("SearchAdapter", "Binding album: " + album.getAlbumName() + " - ID: " + album.getAlbumId());
+
+            itemView.setOnClickListener(v -> {
                 if (listener != null) {
-                    listener.onPlaylistClick(playlist);
+                    if (album.getAlbumId() == null || album.getAlbumId().equals("0")) {
+                        Toast.makeText(context, "Album ID bị thiếu!", Toast.LENGTH_SHORT).show();
+                        Log.e("SearchAdapter", "Album ID bị thiếu khi click! album=" + album.getAlbumName());
+                    } else {
+                        Log.d("SearchAdapter", "Album clicked: " + album.getAlbumName() + " - ID: " + album.getAlbumId());
+                        listener.onAlbumClick(album);
+                    }
                 }
             });
         }
     }
 
-    public void updateData(List<Song> songs, List<Playlist> playlists) {
+    class ArtistViewHolder extends RecyclerView.ViewHolder {
+        private final TextView tvArtistName;
+        private final ImageView ivArtistAvatar;
+
+        public ArtistViewHolder(@NonNull View itemView) {
+            super(itemView);
+            tvArtistName = itemView.findViewById(R.id.txt_artist_name);
+            ivArtistAvatar = itemView.findViewById(R.id.img_artist_avatar);
+        }
+
+        public void bind(Artist artist) {
+            if (artist == null) return;
+
+            tvArtistName.setText(artist.getArtistName());
+            if (artist.getAvatarUrl() != null && !artist.getAvatarUrl().isEmpty()) {
+                Glide.with(context).load(artist.getAvatarUrl()).placeholder(R.drawable.music).into(ivArtistAvatar);
+            } else {
+                ivArtistAvatar.setImageResource(R.drawable.music);
+            }
+
+            Log.d("SearchAdapter", "Binding artist: " + artist.getArtistName() + " - ID: " + artist.getArtistId());
+
+            itemView.setOnClickListener(v -> {
+                if (listener != null) {
+                    if (artist.getArtistId() == null || artist.getArtistId().equals("0")) {
+                        Toast.makeText(context, "Artist ID bị thiếu!", Toast.LENGTH_SHORT).show();
+                        Log.e("SearchAdapter", "Artist ID bị thiếu khi click! artist=" + artist.getArtistName());
+                    } else {
+                        Log.d("SearchAdapter", "Artist clicked: " + artist.getArtistName() + " - ID: " + artist.getArtistId());
+                        listener.onArtistClick(artist);
+                    }
+                }
+            });
+        }
+    }
+
+    public void updateData(List<Song> songs, List<Playlist> playlists, List<Album> albums, List<Artist> artists) {
         List<SearchItem> newItems = new ArrayList<>();
-        if (songs != null) {
-            for (Song song : songs) {
-                newItems.add(new SearchItem.SongItem(song));
-            }
-        }
-        if (playlists != null) {
-            for (Playlist playlist : playlists) {
-                newItems.add(new SearchItem.PlaylistItem(playlist));
-            }
-        }
+        if (songs != null) for (Song song : songs) newItems.add(new SearchItem.SongItem(song));
+        if (playlists != null)
+            for (Playlist p : playlists) newItems.add(new SearchItem.PlaylistItem(p));
+        if (albums != null) for (Album a : albums) newItems.add(new SearchItem.AlbumItem(a));
+        if (artists != null) for (Artist a : artists) newItems.add(new SearchItem.ArtistItem(a));
         updateItems(newItems);
     }
 }

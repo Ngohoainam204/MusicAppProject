@@ -1,15 +1,16 @@
 {
-  "Albums": [
-    {
+  "Albums": {
+    "ab_1": {
       "albumId": "ab_1",
       "albumName": "Tái Sinh",
       "artist": "Tùng Dương",
       "coverUrl": "https://drive.google.com/uc?export=download&id=1l3dkQcjzp8AH5L75X-KxGjEW_dWpNuAM",
       "listOfSongIds": [
-        "song_1"
+        "song_1",
+        "song_10"
       ]
     },
-    {
+    "ab_2": {
       "albumId": "ab_2",
       "albumName": "Những Ngày Xưa",
       "artist": "ThanhDat",
@@ -19,7 +20,7 @@
         "song_9"
       ]
     },
-    {
+    "ab_3": {
       "albumId": "ab_3",
       "albumName": "OST Hàn Quốc",
       "artist": "SS501",
@@ -28,9 +29,9 @@
         "song_2"
       ]
     }
-  ],
-  "Artists": [
-    {
+  },
+  "Artists": {
+    "ar_1": {
       "artistId": "ar_1",
       "artistName": "Tùng Dương",
       "avatarUrl": "https://drive.google.com/uc?export=download&id=1l3dkQcjzp8AH5L75X-KxGjEW_dWpNuAM",
@@ -39,7 +40,7 @@
         "song_1"
       ]
     },
-    {
+    "ar_2": {
       "artistId": "ar_2",
       "artistName": "SS501",
       "avatarUrl": "https://drive.google.com/uc?export=download&id=1zRu2peIdEqdYBWedx8pPz1fERivIWSq_",
@@ -48,7 +49,7 @@
         "song_2"
       ]
     },
-    {
+    "ar_3": {
       "artistId": "ar_3",
       "artistName": "ThanhDat",
       "avatarUrl": "https://drive.google.com/uc?export=download&id=1BZt8xDLtnhNvooi8T_yxGKCPaF4hn4ZJ",
@@ -58,7 +59,7 @@
         "song_9"
       ]
     },
-    {
+    "ar_4": {
       "artistId": "ar_4",
       "artistName": "DuongDomic",
       "avatarUrl": "https://drive.google.com/uc?export=download&id=1eDgFcg-MTvxbR8EGYVc0pOnI77wcweo8",
@@ -67,7 +68,7 @@
         "song_4"
       ]
     },
-    {
+    "ar_5": {
       "artistId": "ar_5",
       "artistName": "LamTuan",
       "avatarUrl": "https://drive.google.com/uc?export=download&id=13x2OPy4IYC95gIuReK6xjAzw3SmCsQ65",
@@ -76,7 +77,7 @@
         "song_5"
       ]
     },
-    {
+    "ar_6": {
       "artistId": "ar_6",
       "artistName": "Huỳnh Văn",
       "avatarUrl": "https://res.cloudinary.com/dvkypaemi/image/upload/v1744289495/uc_ktwwt0.jpg",
@@ -84,7 +85,7 @@
         "song_10"
       ]
     },
-    {
+    "ar_7": {
       "artistId": "ar_7",
       "artistName": "Sơn Tùng",
       "avatarUrl": "https://res.cloudinary.com/dvkypaemi/image/upload/v1744289500/uc_iafg6j.jpg",
@@ -92,7 +93,7 @@
         "song_11"
       ]
     },
-    {
+    "ar_8": {
       "artistId": "ar_8",
       "artistName": "HoaiLam",
       "avatarUrl": "https://res.cloudinary.com/dvkypaemi/image/upload/v1744289467/uc_s9ggal.jpg",
@@ -100,7 +101,7 @@
         "song_6"
       ]
     },
-    {
+    "ar_9": {
       "artistId": "ar_9",
       "artistName": "AnhQuanIdol",
       "avatarUrl": "https://res.cloudinary.com/dvkypaemi/image/upload/v1744289474/uc_fftgbh.jpg",
@@ -108,7 +109,7 @@
         "song_7"
       ]
     },
-    {
+    "ar_10": {
       "artistId": "ar_10",
       "artistName": "Erik",
       "avatarUrl": "https://res.cloudinary.com/dvkypaemi/image/upload/v1744289478/uc_ozzfm8.jpg",
@@ -116,7 +117,7 @@
         "song_8"
       ]
     }
-  ],
+  },
   "Banners": [
     {
       "bannerId": "bn_1",
@@ -137,23 +138,6 @@
       "title": "OST Hàn Quốc"
     }
   ],
-  "Favourites": [
-    {
-      "addedDate": "2025-04-10",
-      "email": "lequanghuy278@gmail_com",
-      "songId": "song_1"
-    },
-    {
-      "addedDate": "2025-04-10",
-      "email": "ngonam2k4@gmail_com",
-      "songId": "song_11"
-    },
-    {
-      "addedDate": "2025-04-10",
-      "email": "ngonam2k4@gmail_com",
-      "songId": "song_2"
-    }
-  ],
   "FavouritesPlaylist": {
     "0": {
       "addedDate": 1744277655714,
@@ -168,6 +152,10 @@
     ]
   },
   "FavouritesSongs": {
+    "dbh2622004@gmail_com": {
+      "0": true,
+      "4": true
+    },
     "ngonam2k4@gmail_com": {
       "0": true,
       "1": true,
@@ -175,16 +163,20 @@
       "4": true,
       "8": true,
       "9": true,
-      "song_1": true
+      "10": true,
+      "song_1": true,
+      "song_3": true,
+      "song_6": true,
+      "song_8": true
     }
   },
   "Playlists": [
     {
       "description": "Những bản nhạc nhẹ nhàng buồn",
       "listOfSongIds": [
-        "song_1",
         "song_3",
-        "song_6"
+        "song_6",
+        "song_1"
       ],
       "playlistId": "pl_1",
       "playlistName": "Ballad Buồn"
@@ -302,12 +294,12 @@
   ],
   "Users": [
     {
-      "avatarUrl": "https://drive.google.com/uc?export=download&id=1l3dkQcjzp8AH5L75X-KxGjEW_dWpNuAM",
-      "email": "lequanghuy278@gmail_com",
+      "avatarUrl": "https://drive.google.com/uc?export=download&id=1BZt8xDLtnhNvooi8T_yxGKCPaF4hn4ZJ",
+      "email": "lequanghuy278@gmail.com",
       "username": "Quang Huy"
     },
     {
-      "avatarUrl": "https://drive.google.com/uc?export=download&id=1BZt8xDLtnhNvooi8T_yxGKCPaF4hn4ZJ",
+      "avatar"avatarUrl": "https://drive.google.com/uc?export=download&id=1BZt8xDLtnhNvooi8T_yxGKCPaF4hn4ZJ",
       "email": "ngonam2k4@gmail_com",
       "username": "Ngô Nam"
     }

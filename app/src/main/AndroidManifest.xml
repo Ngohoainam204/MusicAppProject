@@ -28,13 +28,15 @@
             </intent-filter>
         </activity>
 
+        <activity android:name=".detail.AlbumDetailActivity" />
+        <activity android:name=".detail.ArtistDetailActivity" />
 
         <activity
             android:name=".RegisterLoginActivity"
             android:exported="true"
             android:theme="@style/Theme.MyApplication" />
 
-        <activity android:name=".nowplaying.PlaylistDetailActivity" />
+        <activity android:name=".detail.PlaylistDetailActivity" />
 
         <activity
             android:name=".ChangePasswordActivity"

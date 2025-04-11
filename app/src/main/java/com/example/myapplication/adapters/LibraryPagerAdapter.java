@@ -5,7 +5,7 @@ import androidx.fragment.app.Fragment;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
 import com.example.myapplication.library.FavouriteAlbumsFragment;
-import com.example.myapplication.library.FavouriteAritistsFragment;
+import com.example.myapplication.library.FavouriteArtistsFragment;
 import com.example.myapplication.library.FavouriteSongsFragment;
 import com.example.myapplication.library.FavouritePlaylistsFragment;
 
@@ -22,7 +22,7 @@ public class LibraryPagerAdapter extends FragmentStateAdapter {
             case 0:
                 return new FavouritePlaylistsFragment();
             case 1:
-                return new FavouriteAritistsFragment();
+                return new FavouriteArtistsFragment();
             case 2:
                 return new FavouriteAlbumsFragment();
             case 3:

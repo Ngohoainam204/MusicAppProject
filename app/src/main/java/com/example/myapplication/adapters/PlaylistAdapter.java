@@ -16,7 +16,7 @@ import com.bumptech.glide.Glide;
 import com.example.myapplication.R;
 import com.example.myapplication.models.Playlist;
 import com.example.myapplication.models.Song;
-import com.example.myapplication.nowplaying.PlaylistDetailActivity;
+import com.example.myapplication.detail.PlaylistDetailActivity;
 
 import java.util.HashMap;
 import java.util.HashSet;

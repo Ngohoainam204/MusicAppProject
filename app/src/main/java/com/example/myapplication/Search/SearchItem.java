@@ -1,11 +1,15 @@
 package com.example.myapplication.Search;
 
+import com.example.myapplication.models.Album;
+import com.example.myapplication.models.Artist;
 import com.example.myapplication.models.Playlist;
 import com.example.myapplication.models.Song;
 
 public abstract class SearchItem {
     public static final int TYPE_SONG = 0;
     public static final int TYPE_PLAYLIST = 1;
+    public static final int TYPE_ALBUM = 2;
+    public static final int TYPE_ARTIST = 3;
 
     public abstract int getType();
 
@@ -63,6 +67,60 @@ public abstract class SearchItem {
             if (playlist == null || query == null) return false;
             String lowerQuery = query.toLowerCase();
             return playlist.getPlaylistName() != null && playlist.getPlaylistName().toLowerCase().contains(lowerQuery);
+        }
+    }
+
+    // ---------------------------
+    // Album Item
+    // ---------------------------
+    public static class AlbumItem extends SearchItem {
+        private final Album album;
+
+        public AlbumItem(Album album) {
+            this.album = album;
+        }
+
+        public Album getAlbum() {
+            return album;
+        }
+
+        @Override
+        public int getType() {
+            return TYPE_ALBUM;
+        }
+
+        @Override
+        public boolean matches(String query) {
+            if (album == null || query == null) return false;
+            String lowerQuery = query.toLowerCase();
+            return album.getAlbumName() != null && album.getAlbumName().toLowerCase().contains(lowerQuery);
+        }
+    }
+
+    // ---------------------------
+    // Artist Item
+    // ---------------------------
+    public static class ArtistItem extends SearchItem {
+        private final Artist artist;
+
+        public ArtistItem(Artist artist) {
+            this.artist = artist;
+        }
+
+        public Artist getArtist() {
+            return artist;
+        }
+
+        @Override
+        public int getType() {
+            return TYPE_ARTIST;
+        }
+
+        @Override
+        public boolean matches(String query) {
+            if (artist == null || query == null) return false;
+            String lowerQuery = query.toLowerCase();
+            return artist.getArtistName() != null && artist.getArtistName().toLowerCase().contains(lowerQuery);
         }
     }
 }

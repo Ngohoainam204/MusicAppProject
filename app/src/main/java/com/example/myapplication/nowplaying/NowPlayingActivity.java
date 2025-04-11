@@ -55,6 +55,7 @@ public class NowPlayingActivity extends AppCompatActivity {
     private List<Song> songList = new ArrayList<>();
     private int currentSongIndex = -1;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -75,14 +76,35 @@ public class NowPlayingActivity extends AppCompatActivity {
         Intent intent = getIntent();
         if (intent != null) {
             currentSongId = intent.getStringExtra("song_id");
-            songList = (ArrayList<Song>) intent.getSerializableExtra("playlist_songs");
+            Log.d(TAG, "Intent received - song_id: " + currentSongId);
+
+            Object songsObj = intent.getSerializableExtra("playlist_songs");
+            if (songsObj == null) {
+                Log.e(TAG, "playlist_songs is null in intent");
+            } else {
+                Log.d(TAG, "playlist_songs class: " + songsObj.getClass().getName());
+                if (songsObj instanceof ArrayList<?>) {
+                    ArrayList<?> tempList = (ArrayList<?>) songsObj;
+                    Log.d(TAG, "playlist_songs size: " + tempList.size());
+
+                    if (!tempList.isEmpty() && tempList.get(0) instanceof Song) {
+                        songList = (ArrayList<Song>) songsObj;
+                        Log.d(TAG, "playlist_songs contains Song instances");
+                    } else {
+                        Log.e(TAG, "playlist_songs does not contain Song instances.");
+                    }
+                } else {
+                    Log.e(TAG, "playlist_songs is not an ArrayList.");
+                }
+            }
         }
 
         if (songList != null && !songList.isEmpty() && currentSongId != null) {
             currentSongIndex = findSongIndexById(currentSongId);
-            Log.d(TAG, "onCreate - Current index: " + currentSongIndex);
+            Log.d(TAG, "onCreate - Found current index: " + currentSongIndex);
             loadCurrentSongData();
         } else {
+            Log.e(TAG, "Failed to load songs - songList null/empty or currentSongId null");
             Toast.makeText(this, "Không tìm thấy danh sách bài hát.", Toast.LENGTH_SHORT).show();
             finish();
         }
@@ -99,30 +121,9 @@ public class NowPlayingActivity extends AppCompatActivity {
             openLyricsFragment();
         });
 
-        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                if (fromUser && exoPlayer != null) {
-                    isSeeking = true;
-                    tvCurrentTime.setText(formatTime(progress));
-                }
-            }
 
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-                isSeeking = true;
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-                if (exoPlayer != null) {
-                    int progress = seekBar.getProgress();
-                    exoPlayer.seekTo(progress);
-                    isSeeking = false;
-                }
-            }
-        });
     }
+
 
     private void loadCurrentSongData() {
         if (currentSongIndex != -1 && currentSongIndex < songList.size()) {

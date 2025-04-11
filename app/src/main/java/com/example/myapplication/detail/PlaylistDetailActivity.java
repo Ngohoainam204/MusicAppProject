@@ -1,4 +1,4 @@
-package com.example.myapplication.nowplaying;
+package com.example.myapplication.detail;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -16,8 +16,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.myapplication.R;
 import com.example.myapplication.Search.SearchItem;
 import com.example.myapplication.adapters.SearchAdapter;
+import com.example.myapplication.models.Album;
+import com.example.myapplication.models.Artist;
 import com.example.myapplication.models.Playlist;
 import com.example.myapplication.models.Song;
+import com.example.myapplication.nowplaying.NowPlayingActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -90,6 +93,16 @@ public class PlaylistDetailActivity extends AppCompatActivity {
             public void onPlaylistClick(Playlist playlist) {
                 // Không xử lý ở đây
             }
+
+            @Override
+            public void onAlbumClick(Album album) {
+
+            }
+
+            @Override
+            public void onArtistClick(Artist artist) {
+
+            }
         });
 
         playlistId = getIntent().getStringExtra(EXTRA_PLAYLIST_ID);
@@ -144,24 +157,27 @@ public class PlaylistDetailActivity extends AppCompatActivity {
     private void loadPlaylistDetails(String playlistId) {
         if (playlistId == null) return;
 
-        databaseRef.child("Playlists").child(playlistId)
+        databaseRef.child("Playlists")
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        Playlist playlist = snapshot.getValue(Playlist.class);
-                        if (playlist != null && playlist.getListOfSongIds() != null && !playlist.getListOfSongIds().isEmpty()) {
-                            loadPlaylistSongs(playlist);
-                            checkIfFavorite();
-                        } else {
-                            Toast.makeText(PlaylistDetailActivity.this, "Playlist không có bài hát", Toast.LENGTH_SHORT).show();
+                        for (DataSnapshot playlistSnap : snapshot.getChildren()) {
+                            Playlist playlist = playlistSnap.getValue(Playlist.class);
+                            if (playlist != null && playlistId.equals(playlist.getPlaylistId())) {
+                                loadPlaylistSongs(playlist);
+                                checkIfFavorite();
+                                return;
+                            }
                         }
+                        Toast.makeText(PlaylistDetailActivity.this, "Không tìm thấy playlist", Toast.LENGTH_SHORT).show();
                     }
 
                     @Override
                     public void onCancelled(@NonNull DatabaseError error) {
-                        Log.e("PlaylistDetail", "Error loading playlist details: " + error.getMessage());
+                        Log.e("PlaylistDetail", "Error loading playlist: " + error.getMessage());
                     }
                 });
+
     }
 
     private void loadPlaylistSongs(Playlist playlist) {

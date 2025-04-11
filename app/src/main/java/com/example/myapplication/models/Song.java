@@ -3,6 +3,8 @@ package com.example.myapplication.models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.firebase.database.PropertyName;
+
 public class Song implements Parcelable {
     private String songId;
     private String title;
@@ -49,10 +51,12 @@ public class Song implements Parcelable {
         }
     };
 
+    @PropertyName("songid")
     public String getSongId() {
         return songId;
     }
 
+    @PropertyName("songid")
     public void setSongId(String songId) {
         this.songId = songId;
     }
