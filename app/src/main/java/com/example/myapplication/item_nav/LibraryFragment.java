@@ -4,6 +4,9 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -14,11 +17,20 @@ import com.example.myapplication.R;
 import com.example.myapplication.adapters.LibraryPagerAdapter;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 public class LibraryFragment extends Fragment {
 
     private TabLayout tabLayout;
     private ViewPager2 viewPager;
+    private TextView tvUsername;
+
+    public LibraryFragment() {
+        // Required empty public constructor
+    }
 
     @Nullable
     @Override
@@ -28,6 +40,10 @@ public class LibraryFragment extends Fragment {
 
         tabLayout = view.findViewById(R.id.tabLayoutLibrary);
         viewPager = view.findViewById(R.id.viewPagerLibrary);
+        tvUsername = view.findViewById(R.id.tvUsername);
+
+        // Load dữ liệu username từ Firebase
+        loadUsername();
 
         LibraryPagerAdapter adapter = new LibraryPagerAdapter(this);
         viewPager.setAdapter(adapter);
@@ -50,9 +66,9 @@ public class LibraryFragment extends Fragment {
                     }
                 }).attach();
 
-        // 👉 Thêm logic ẩn/hiện thanh tìm kiếm
+        // Ẩn/hiện thanh tìm kiếm
         View searchBar = view.findViewById(R.id.searchBar);
-        View btnSearchIcon = view.findViewById(R.id.btnSearchIcon);
+        ImageView btnSearchIcon = view.findViewById(R.id.btnSearchIcon);
 
         btnSearchIcon.setOnClickListener(v -> {
             if (searchBar.getVisibility() == View.GONE) {
@@ -65,4 +81,26 @@ public class LibraryFragment extends Fragment {
         return view;
     }
 
+    private void loadUsername() {
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (currentUser != null) {
+            String uid = currentUser.getUid();
+            DatabaseReference userRef = FirebaseDatabase.getInstance()
+                    .getReference("Users").child(uid).child("username");
+
+            userRef.get().addOnSuccessListener(snapshot -> {
+                if (snapshot.exists()) {
+                    String username = snapshot.getValue(String.class);
+                    tvUsername.setText("Xin chào, " + username);
+                } else {
+                    tvUsername.setText("Xin chào, khách");
+                }
+            }).addOnFailureListener(e -> {
+                tvUsername.setText("Xin chào, lỗi tải tên");
+                Toast.makeText(getContext(), "Lỗi khi tải username: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+            });
+        } else {
+            tvUsername.setText("Xin chào, chưa đăng nhập");
+        }
+    }
 }
