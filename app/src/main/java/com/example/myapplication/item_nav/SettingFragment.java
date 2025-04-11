@@ -1,11 +1,13 @@
 package com.example.myapplication.item_nav;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.*;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -19,14 +21,17 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.*;
+
+import java.util.Map;
 
 public class SettingFragment extends Fragment {
 
     private Button btnAddAccount, btnLogout, btnChangepw;
+    private TextView tvUsername;
 
-    public SettingFragment() {
-        // Required empty public constructor
-    }
+    public SettingFragment() {}
 
     @Nullable
     @Override
@@ -41,8 +46,69 @@ public class SettingFragment extends Fragment {
         btnAddAccount = view.findViewById(R.id.btnAddAccount);
         btnLogout = view.findViewById(R.id.btnLogout);
         btnChangepw = view.findViewById(R.id.btnChangePassword);
+        tvUsername = view.findViewById(R.id.tvUsername);
 
-        // Sự kiện cho nút Add new account
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+
+        if (currentUser != null) {
+            String uid = currentUser.getUid();
+            DatabaseReference rootRef = FirebaseDatabase.getInstance().getReference("Users");
+            DatabaseReference userRef = rootRef.child(uid);
+
+            // Di chuyển dữ liệu từ node "0" (nếu có)
+            rootRef.child("0").addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    if (snapshot.exists()) {
+                        Map<String, Object> oldUserData = (Map<String, Object>) snapshot.getValue();
+                        rootRef.child(uid).setValue(oldUserData).addOnSuccessListener(unused -> {
+                            rootRef.child("0").removeValue();
+                        });
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {}
+            });
+
+            // Hiển thị username
+            userRef.child("username").get().addOnSuccessListener(snapshot -> {
+                if (snapshot.exists()) {
+                    String username = snapshot.getValue(String.class);
+                    tvUsername.setText(username);
+                }
+            });
+
+            // Nhấn vào username để sửa
+            tvUsername.setOnClickListener(v -> {
+                EditText input = new EditText(requireContext());
+                input.setInputType(InputType.TYPE_CLASS_TEXT);
+                input.setHint("Enter new username");
+
+                new AlertDialog.Builder(requireContext())
+                        .setTitle("Edit username")
+                        .setView(input)
+                        .setPositiveButton("Save", (dialog, which) -> {
+                            String newUsername = input.getText().toString().trim();
+                            if (!newUsername.isEmpty()) {
+                                userRef.child("username").setValue(newUsername)
+                                        .addOnSuccessListener(unused -> {
+                                            tvUsername.setText(newUsername);
+                                            Toast.makeText(getContext(), "Update successful!", Toast.LENGTH_SHORT).show();
+                                        })
+                                        .addOnFailureListener(e -> {
+                                            Toast.makeText(getContext(), "Failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                                        });
+                            } else {
+                                Toast.makeText(getContext(), "Please enter username", Toast.LENGTH_SHORT).show();
+                            }
+                        })
+                        .setNegativeButton("Cancel", null)
+                        .show();
+            });
+        }
+
+        // Thêm tài khoản khác
         btnAddAccount.setOnClickListener(v -> {
             getParentFragmentManager().beginTransaction()
                     .replace(R.id.fragment_container, new LoginFragment())
@@ -50,11 +116,10 @@ public class SettingFragment extends Fragment {
                     .commit();
         });
 
+        // Đăng xuất
         btnLogout.setOnClickListener(v -> {
-            // Đăng xuất Firebase
             FirebaseAuth.getInstance().signOut();
 
-            // Đăng xuất Google
             GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                     .requestIdToken(getString(R.string.default_web_client_id))
                     .requestEmail()
@@ -62,17 +127,17 @@ public class SettingFragment extends Fragment {
             GoogleSignInClient mGoogleSignInClient = GoogleSignIn.getClient(requireContext(), gso);
 
             mGoogleSignInClient.signOut().addOnCompleteListener(task -> {
-                // Sau khi đăng xuất xong, chuyển về RegisterLoginActivity và xóa backstack
                 Intent intent = new Intent(getActivity(), RegisterLoginActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(intent);
                 requireActivity().finish();
             });
         });
+
+        // Đổi mật khẩu
         btnChangepw.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), ChangePasswordActivity.class);
             startActivity(intent);
         });
-
     }
 }
