@@ -83,27 +83,27 @@ public class SettingFragment extends Fragment {
             tvUsername.setOnClickListener(v -> {
                 EditText input = new EditText(requireContext());
                 input.setInputType(InputType.TYPE_CLASS_TEXT);
-                input.setHint("Nhập username mới");
+                input.setHint("Enter new username");
 
                 new AlertDialog.Builder(requireContext())
-                        .setTitle("Sửa username")
+                        .setTitle("Edit username")
                         .setView(input)
-                        .setPositiveButton("Lưu", (dialog, which) -> {
+                        .setPositiveButton("Save", (dialog, which) -> {
                             String newUsername = input.getText().toString().trim();
                             if (!newUsername.isEmpty()) {
                                 userRef.child("username").setValue(newUsername)
                                         .addOnSuccessListener(unused -> {
                                             tvUsername.setText(newUsername);
-                                            Toast.makeText(getContext(), "Cập nhật thành công!", Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(getContext(), "Update successful!", Toast.LENGTH_SHORT).show();
                                         })
                                         .addOnFailureListener(e -> {
-                                            Toast.makeText(getContext(), "Lỗi khi cập nhật: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(getContext(), "Failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                                         });
                             } else {
-                                Toast.makeText(getContext(), "Vui lòng nhập username", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getContext(), "Please enter username", Toast.LENGTH_SHORT).show();
                             }
                         })
-                        .setNegativeButton("Hủy", null)
+                        .setNegativeButton("Cancel", null)
                         .show();
             });
         }
