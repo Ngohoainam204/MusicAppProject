@@ -52,55 +52,54 @@ public class FavouriteArtistsFragment extends Fragment {
     }
 
     private void loadFavouriteArtists() {
-
         String email = FirebaseAuth.getInstance().getCurrentUser().getEmail();
         if (email == null) {
             Log.d(TAG, "loadFavouriteArtists: User email is null");
             return;
         }
         String encodedEmail = email.replace(".", "_");
-        Log.d(TAG, "loadFavouriteArtists: encodedEmail=" + encodedEmail);
 
         DatabaseReference favRef = FirebaseDatabase.getInstance(FIREBASE_DB_URL)
                 .getReference("FavouritesArtists").child(encodedEmail);
-        Log.d(TAG, "loadFavouriteArtists: favRef=" + favRef.toString());
-        Log.d("loadFavouriteArtists", "encodedEmail=" + encodedEmail);
-        Log.d("loadFavouriteArtists", "favRef=" + favRef.toString());
 
         favRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot favSnapshot) {
-                Log.d(TAG, "loadFavouriteArtists: favSnapshot.exists()=" + favSnapshot.exists());
                 if (!favSnapshot.exists()) {
                     Toast.makeText(getContext(), "Bạn chưa có nghệ sĩ yêu thích nào", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
+                // 👉 Lấy danh sách artistId yêu thích
+                List<String> favArtistIds = new ArrayList<>();
+                for (DataSnapshot favArtistSnap : favSnapshot.getChildren()) {
+                    favArtistIds.add(favArtistSnap.getKey());
+                    Log.d(TAG, "Favourite artistId = " + favArtistSnap.getKey());
+                }
+
+                // 👉 Truy vấn dữ liệu từ Artists (là List nên duyệt toàn bộ)
                 DatabaseReference artistRef = FirebaseDatabase.getInstance(FIREBASE_DB_URL)
                         .getReference("Artists");
-                Log.d(TAG, "loadFavouriteArtists: artistRef=" + artistRef.toString());
 
                 artistRef.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot artistSnapshot) {
                         favouriteArtists.clear();
-                        Log.d(TAG, "loadFavouriteArtists: artistSnapshot.getChildrenCount()=" + artistSnapshot.getChildrenCount());
+
                         for (DataSnapshot artistSnap : artistSnapshot.getChildren()) {
-                            Log.d(TAG, "loadFavouriteArtists: Checking artist with key=" + artistSnap.getKey());
-                            if (favSnapshot.hasChild(artistSnap.getKey())) {
-                                Artist artist = artistSnap.getValue(Artist.class);
-                                if (artist != null) {
-                                    artist.setArtistId(artistSnap.getKey());
-                                    favouriteArtists.add(artist);
-                                    Log.d(TAG, "loadFavouriteArtists: Added favourite artist=" + artist.getArtistName() + " with ID=" + artist.getArtistId());
-                                } else {
-                                    Log.w(TAG, "loadFavouriteArtists: Artist is null for key=" + artistSnap.getKey());
-                                }
-                            } else {
-                                Log.d(TAG, "loadFavouriteArtists: Artist with key=" + artistSnap.getKey() + " is not in favourites for user=" + encodedEmail);
+                            Artist artist = artistSnap.getValue(Artist.class);
+                            if (artist != null && artist.getArtistId() != null &&
+                                    favArtistIds.contains(artist.getArtistId())) {
+
+                                favouriteArtists.add(artist);
+                                Log.d(TAG, "Added favourite artist: " + artist.getArtistName());
                             }
                         }
-                        Log.d(TAG, "loadFavouriteArtists: favouriteArtists.size()=" + favouriteArtists.size());
+
+                        if (favouriteArtists.isEmpty()) {
+                            Toast.makeText(getContext(), "Không tìm thấy dữ liệu nghệ sĩ yêu thích", Toast.LENGTH_SHORT).show();
+                        }
+
                         artistAdapter.notifyDataSetChanged();
                     }
 

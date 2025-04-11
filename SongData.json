@@ -1,6 +1,6 @@
 {
-  "Albums": {
-    "ab_1": {
+  "Albums": [
+    {
       "albumId": "ab_1",
       "albumName": "Tái Sinh",
       "artist": "Tùng Dương",
@@ -10,7 +10,7 @@
         "song_10"
       ]
     },
-    "ab_2": {
+    {
       "albumId": "ab_2",
       "albumName": "Những Ngày Xưa",
       "artist": "ThanhDat",
@@ -20,7 +20,7 @@
         "song_9"
       ]
     },
-    "ab_3": {
+    {
       "albumId": "ab_3",
       "albumName": "OST Hàn Quốc",
       "artist": "SS501",
@@ -29,9 +29,9 @@
         "song_2"
       ]
     }
-  },
-  "Artists": {
-    "ar_1": {
+  ],
+  "Artists": [
+    {
       "artistId": "ar_1",
       "artistName": "Tùng Dương",
       "avatarUrl": "https://drive.google.com/uc?export=download&id=1l3dkQcjzp8AH5L75X-KxGjEW_dWpNuAM",
@@ -40,7 +40,7 @@
         "song_1"
       ]
     },
-    "ar_2": {
+    {
       "artistId": "ar_2",
       "artistName": "SS501",
       "avatarUrl": "https://drive.google.com/uc?export=download&id=1zRu2peIdEqdYBWedx8pPz1fERivIWSq_",
@@ -49,7 +49,7 @@
         "song_2"
       ]
     },
-    "ar_3": {
+    {
       "artistId": "ar_3",
       "artistName": "ThanhDat",
       "avatarUrl": "https://drive.google.com/uc?export=download&id=1BZt8xDLtnhNvooi8T_yxGKCPaF4hn4ZJ",
@@ -59,7 +59,7 @@
         "song_9"
       ]
     },
-    "ar_4": {
+    {
       "artistId": "ar_4",
       "artistName": "DuongDomic",
       "avatarUrl": "https://drive.google.com/uc?export=download&id=1eDgFcg-MTvxbR8EGYVc0pOnI77wcweo8",
@@ -68,7 +68,7 @@
         "song_4"
       ]
     },
-    "ar_5": {
+    {
       "artistId": "ar_5",
       "artistName": "LamTuan",
       "avatarUrl": "https://drive.google.com/uc?export=download&id=13x2OPy4IYC95gIuReK6xjAzw3SmCsQ65",
@@ -77,7 +77,7 @@
         "song_5"
       ]
     },
-    "ar_6": {
+    {
       "artistId": "ar_6",
       "artistName": "Huỳnh Văn",
       "avatarUrl": "https://res.cloudinary.com/dvkypaemi/image/upload/v1744289495/uc_ktwwt0.jpg",
@@ -85,15 +85,19 @@
         "song_10"
       ]
     },
-    "ar_7": {
+    {
       "artistId": "ar_7",
       "artistName": "Sơn Tùng",
       "avatarUrl": "https://res.cloudinary.com/dvkypaemi/image/upload/v1744289500/uc_iafg6j.jpg",
       "listOfSongIds": [
-        "song_11"
+        "song_11",
+        "song_13",
+        "song_15",
+        null,
+        "song_18"
       ]
     },
-    "ar_8": {
+    {
       "artistId": "ar_8",
       "artistName": "HoaiLam",
       "avatarUrl": "https://res.cloudinary.com/dvkypaemi/image/upload/v1744289467/uc_s9ggal.jpg",
@@ -101,7 +105,7 @@
         "song_6"
       ]
     },
-    "ar_9": {
+    {
       "artistId": "ar_9",
       "artistName": "AnhQuanIdol",
       "avatarUrl": "https://res.cloudinary.com/dvkypaemi/image/upload/v1744289474/uc_fftgbh.jpg",
@@ -109,7 +113,7 @@
         "song_7"
       ]
     },
-    "ar_10": {
+    {
       "artistId": "ar_10",
       "artistName": "Erik",
       "avatarUrl": "https://res.cloudinary.com/dvkypaemi/image/upload/v1744289478/uc_ozzfm8.jpg",
@@ -117,7 +121,7 @@
         "song_8"
       ]
     }
-  },
+  ],
   "Banners": [
     {
       "bannerId": "bn_1",
@@ -138,12 +142,38 @@
       "title": "OST Hàn Quốc"
     }
   ],
+  "FavouritesArtists": {
+    "ngonam2k4@gmail_com": {
+      "ar_1": {
+        "addedDate": 1744384249343,
+        "artistId": "ar_1"
+      }
+    }
+  },
   "FavouritesPlaylist": {
     "0": {
       "addedDate": 1744277655714,
       "email": "ngonam2k4@gmail_com",
       "playlistId": "pl_1"
     },
+    "dbh2622004@gmail_com": [
+      {
+        "addedDate": 1744386649314,
+        "playlistId": "0"
+      }
+    ],
+    "lequanghuy278@gmail_com": [
+      {
+        "addedDate": 1744383342612,
+        "playlistId": "0"
+      }
+    ],
+    "namnaofumi2004@gmail_com": [
+      {
+        "addedDate": 1744381956183,
+        "playlistId": "0"
+      }
+    ],
     "ngonam2k4@gmail_com": [
       {
         "addedDate": 1744349984189,
@@ -154,18 +184,22 @@
   "FavouritesSongs": {
     "dbh2622004@gmail_com": {
       "0": true,
-      "4": true
+      "6": true
+    },
+    "namnaofumi2004@gmail_com": {
+      "song_1": true,
+      "song_10": true
     },
     "ngonam2k4@gmail_com": {
-      "0": true,
-      "1": true,
-      "3": true,
       "4": true,
       "8": true,
       "9": true,
       "10": true,
       "song_1": true,
+      "song_2": true,
+      "song_20": true,
       "song_3": true,
+      "song_4": true,
       "song_6": true,
       "song_8": true
     }
@@ -175,7 +209,7 @@
       "description": "Những bản nhạc nhẹ nhàng buồn",
       "listOfSongIds": [
         "song_3",
-        "song_6",
+        "\"song_6\"",
         "song_1"
       ],
       "playlistId": "pl_1",
@@ -290,6 +324,86 @@
       "fileUrl": "https://res.cloudinary.com/dvkypaemi/video/upload/v1744289631/CanTinhNhuThe-DICKSONVietNamThanhDatLeChiTrung-10977857_wam7sy.mp3",
       "songId": "song_9",
       "title": "Cạn tình như thế"
+    },
+    {
+      "artist": "Minh Vuong",
+      "coverUrl": "https://res.cloudinary.com/dvkypaemi/image/upload/v1744381934/ratlauroimoikhoc_wcis1w.jpg",
+      "duration": "4:00",
+      "fileUrl": "https://res.cloudinary.com/dvkypaemi/video/upload/v1744380712/RatLauRoiMoiKhocNewVersion-QuocThien-15059081_di6j9i.mp3",
+      "songId": "song_12",
+      "title": "Rất lâu rồi mới khóc"
+    },
+    {
+      "artist": "Sơn Tùng",
+      "coverUrl": "https://res.cloudinary.com/dvkypaemi/image/upload/v1744381931/chayngaydi_mgirlr.jpg",
+      "duration": "5:02",
+      "fileUrl": "https://res.cloudinary.com/dvkypaemi/video/upload/v1744380636/ChayNgayDi-SonTungMTP-5468704_arjcvg.mp3",
+      "songId": "song_13",
+      "title": "Chạy ngay đi"
+    },
+    {
+      "artist": "Bùi Trường Linh",
+      "coverUrl": "https://res.cloudinary.com/dvkypaemi/image/upload/v1744381932/giothi_xxpte0.jpg",
+      "duration": "4:15",
+      "fileUrl": "https://res.cloudinary.com/dvkypaemi/video/upload/v1744380621/GioThi-buitruonglinh-16952778_kwttml.mp3",
+      "songId": "song_14",
+      "title": "Giờ Thì"
+    },
+    {
+      "artist": "Sơn Tùng",
+      "coverUrl": "https://res.cloudinary.com/dvkypaemi/image/upload/v1744381932/haytraochoanh_ogqxax.jpg",
+      "duration": "4:00",
+      "fileUrl": "https://res.cloudinary.com/dvkypaemi/video/upload/v1744380631/HayTraoChoAnh-SonTungMTPSnoopDogg-6010660_msvwan.mp3",
+      "songid": "song_15",
+      "title": "Hãy Trao cho Anh"
+    },
+    {
+      "artist": "DatG",
+      "coverUrl": "https://res.cloudinary.com/dvkypaemi/image/upload/v1744382153/khovenucui_f3cttx.jpg",
+      "duration": "4:23",
+      "fileUrl": "https://res.cloudinary.com/dvkypaemi/video/upload/v1744380613/KhoVeNuCuoi-DatGDuUyen-6114344_uqf7vt.mp3",
+      "songId": "song_16",
+      "title": "Khó vẽ nụ cười"
+    },
+    {
+      "artist": "Orange",
+      "coverUrl": "https://res.cloudinary.com/dvkypaemi/image/upload/v1744381931/chanai_zctu4e.jpg",
+      "duration": "4:12",
+      "fileUrl": "https://res.cloudinary.com/dvkypaemi/video/upload/v1744380609/ChanAi-OrangeKhoi-6225088_es5rwh.mp3",
+      "songId": "song_17",
+      "title": "Chân ái"
+    },
+    {
+      "artist": "Sơn Tùng",
+      "coverUrl": "https://res.cloudinary.com/dvkypaemi/image/upload/v1744381934/noinaycoanh_c9m1rk.jpg",
+      "duration": "5:12",
+      "fileUrl": "https://res.cloudinary.com/dvkypaemi/video/upload/v1744380590/NoiNayCoAnh-SonTungMTP-4772041_mehoao.mp3",
+      "songid": "song_18",
+      "title": "Nơi này có anh"
+    },
+    {
+      "artist": "Thanh Hưng",
+      "coverUrl": "https://res.cloudinary.com/dvkypaemi/image/upload/v1744381932/laotamkhotu_pqo3nn.jpg",
+      "duration": "4:17",
+      "fileUrl": "https://res.cloudinary.com/dvkypaemi/video/upload/v1744380600/LaoTamKhoTu-ThanhHungIdol-8783607_bkwar8.mp3",
+      "songId": "song_19",
+      "title": "Lao Tâm Khổ Tứ"
+    },
+    {
+      "artist": "Trung Tự",
+      "coverUrl": "https://res.cloudinary.com/dvkypaemi/image/upload/v1744381936/vuahanvuayeu_kaapyd.jpg",
+      "duration": "5:12",
+      "fileUrl": "https://res.cloudinary.com/dvkypaemi/video/upload/v1744380570/VuaHanVuaYeu-TrungTu-15121915_wqei9j.mp3",
+      "songId": "song_20",
+      "title": "Vừa Hận Vừa Yêu"
+    },
+    {
+      "artist": "Thanh Hưng",
+      "coverUrl": "https://res.cloudinary.com/dvkypaemi/image/upload/v1744381935/vansutuyduyen_poh5yl.jpg",
+      "duration": "4:27",
+      "fileUrl": "https://res.cloudinary.com/dvkypaemi/video/upload/v1744380584/VanSuTuyDuyen-ThanhHung-9802657_jliqjh.mp3",
+      "songid": "song_21",
+      "title": "Vạn sự tùy duyên"
     }
   ],
   "Users": [
@@ -299,7 +413,7 @@
       "username": "Quang Huy"
     },
     {
-      "avatar"avatarUrl": "https://drive.google.com/uc?export=download&id=1BZt8xDLtnhNvooi8T_yxGKCPaF4hn4ZJ",
+      "avatarUrl": "https://drive.google.com/uc?export=download&id=1BZt8xDLtnhNvooi8T_yxGKCPaF4hn4ZJ",
       "email": "ngonam2k4@gmail_com",
       "username": "Ngô Nam"
     }
