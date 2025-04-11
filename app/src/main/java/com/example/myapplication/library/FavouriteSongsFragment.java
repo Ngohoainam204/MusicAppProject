@@ -53,7 +53,8 @@ public class FavouriteSongsFragment extends Fragment {
         String encodedEmail = email.replace(".", "_");
 
         DatabaseReference favRef = FirebaseDatabase.getInstance(FIREBASE_DB_URL)
-                .getReference("Favourites").child(encodedEmail);
+                .getReference("FavouritesSongs" +
+                        "").child(encodedEmail);
 
         favRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override

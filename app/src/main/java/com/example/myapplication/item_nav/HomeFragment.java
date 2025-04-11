@@ -7,8 +7,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -17,12 +15,16 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 
-import com.bumptech.glide.Glide;
 import com.example.myapplication.R;
+import com.example.myapplication.adapters.AlbumAdapter;
+import com.example.myapplication.adapters.ArtistAdapter;
 import com.example.myapplication.adapters.BannerAdapter;
 import com.example.myapplication.adapters.PlaylistAdapter;
+import com.example.myapplication.models.Album;
+import com.example.myapplication.models.Artist;
 import com.example.myapplication.models.Playlist;
 import com.example.myapplication.models.Song;
+import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.*;
 
@@ -34,15 +36,26 @@ import java.util.List;
 public class HomeFragment extends Fragment {
 
     private ViewPager2 viewPagerBanner;
+    private TabLayout tabIndicator;
     private FirebaseDatabase database;
     private DatabaseReference bannersRef;
     private List<String> bannerUrls;
     private BannerAdapter bannerAdapter;
 
-    private RecyclerView recyclerPlaylist;
+    private RecyclerView recyclerPlaylistHome; // Đã đổi ID
     private PlaylistAdapter playlistAdapter;
     private List<Playlist> playlistList;
     private DatabaseReference playlistRef;
+
+    private RecyclerView recyclerAlbumHome; // Đã đổi ID
+    private AlbumAdapter albumAdapter;
+    private List<Album> albumList;
+    private DatabaseReference albumsRef;
+
+    private RecyclerView recyclerArtistHome; // Đã đổi ID
+    private ArtistAdapter artistAdapter;
+    private List<Artist> artistList;
+    private DatabaseReference artistsRef;
 
     private HashMap<String, Song> songMap;
     private HashSet<String> favouritePlaylistIds;
@@ -57,35 +70,56 @@ public class HomeFragment extends Fragment {
         database = FirebaseDatabase.getInstance("https://musicplayerapp-aed33-default-rtdb.asia-southeast1.firebasedatabase.app");
         bannersRef = database.getReference("Banners");
         playlistRef = database.getReference("Playlists");
+        albumsRef = database.getReference("Albums");
+        artistsRef = database.getReference("Artists");
         favouritesRef = database.getReference("FavouritesPlaylist");
 
         // Banner
         viewPagerBanner = view.findViewById(R.id.viewPagerBanner);
+        tabIndicator = view.findViewById(R.id.tabIndicator);
         bannerUrls = new ArrayList<>();
         bannerAdapter = new BannerAdapter(getContext(), bannerUrls);
         viewPagerBanner.setAdapter(bannerAdapter);
+        // Thêm logic cho indicator nếu cần (ví dụ: auto scroll, dot indicator)
         loadBanners();
 
         // Playlist
-        recyclerPlaylist = view.findViewById(R.id.recycler_playlist_home);
-        recyclerPlaylist.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
-
+        recyclerPlaylistHome = view.findViewById(R.id.recycler_playlist_home);
+        recyclerPlaylistHome.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
         playlistList = new ArrayList<>();
         songMap = new HashMap<>();
         favouritePlaylistIds = new HashSet<>();
-
         playlistAdapter = new PlaylistAdapter(
                 getContext(),
                 playlistList,
                 favouritePlaylistIds,
                 songMap,
                 this::toggleFavouritePlaylist
-        );
-        recyclerPlaylist.setAdapter(playlistAdapter);
 
-        // Load dữ liệu theo đúng thứ tự: songMap -> playlist -> favourite
+        );
+        recyclerPlaylistHome.setAdapter(playlistAdapter);
+
+        // Album
+        recyclerAlbumHome = view.findViewById(R.id.recycler_album_home);
+        recyclerAlbumHome.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
+        albumList = new ArrayList<>();
+        albumAdapter = new AlbumAdapter(getContext(), albumList);
+        recyclerAlbumHome.setAdapter(albumAdapter);
+        loadAlbums();
+
+        // Artist
+        recyclerArtistHome = view.findViewById(R.id.recycler_artist_home);
+        recyclerArtistHome.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
+        artistList = new ArrayList<>();
+        artistAdapter = new ArtistAdapter(getContext(), artistList);
+        recyclerArtistHome.setAdapter(artistAdapter);
+        loadArtists();
+
+        // Load dữ liệu theo đúng thứ tự
         loadSongsFromFirebase(() -> {
             loadPlaylists();
+            loadAlbums();
+            loadArtists();
             loadFavouritePlaylists();
         });
 
@@ -104,10 +138,14 @@ public class HomeFragment extends Fragment {
                     }
                 }
                 bannerAdapter.notifyDataSetChanged();
+                // Cập nhật indicator sau khi load xong banner
+                // updateBannerIndicator();
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
+                Log.e(TAG, "Lỗi tải banners: " + error.getMessage());
+                Toast.makeText(getContext(), "Lỗi tải banners.", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -126,10 +164,8 @@ public class HomeFragment extends Fragment {
                         songMap.put(songId, song);
                     }
                 }
-
                 Log.d(TAG, "✅ SongMap loaded. Keys: " + songMap.keySet());
-                playlistAdapter.setSongMap(songMap); // Đảm bảo gọi ở đây
-
+                playlistAdapter.setSongMap(songMap); // Cập nhật songMap cho playlistAdapter
                 if (onLoaded != null) onLoaded.run();
             }
 
@@ -146,24 +182,10 @@ public class HomeFragment extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 playlistList.clear();
-
                 for (DataSnapshot item : snapshot.getChildren()) {
                     Playlist playlist = item.getValue(Playlist.class);
-
                     if (playlist != null) {
                         playlist.setId(item.getKey());
-
-                        if (playlist.getListOfSongIds() == null || playlist.getListOfSongIds().isEmpty()) {
-                            List<String> songIds = new ArrayList<>();
-                            for (DataSnapshot songIdSnap : item.child("listOfSongIds").getChildren()) {
-                                String songId = songIdSnap.getValue(String.class);
-                                if (songId != null) {
-                                    songIds.add(songId);
-                                }
-                            }
-                            playlist.setListOfSongIds(songIds);
-                        }
-
                         // Lấy ảnh bìa của bài hát đầu tiên nếu có
                         if (playlist.getListOfSongIds() != null && !playlist.getListOfSongIds().isEmpty()) {
                             String firstSongId = playlist.getListOfSongIds().get(0);
@@ -179,7 +201,52 @@ public class HomeFragment extends Fragment {
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                System.err.println("Firebase error: " + error.getMessage());
+                Log.e(TAG, "Lỗi tải playlists: " + error.getMessage());
+                Toast.makeText(getContext(), "Lỗi tải playlists.", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void loadAlbums() {
+        albumsRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                albumList.clear();
+                for (DataSnapshot item : snapshot.getChildren()) {
+                    Album album = item.getValue(Album.class);
+                    if (album != null) {
+                        albumList.add(album);
+                    }
+                }
+                albumAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.e(TAG, "Lỗi tải albums: " + error.getMessage());
+                Toast.makeText(getContext(), "Lỗi tải albums.", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void loadArtists() {
+        artistsRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                artistList.clear();
+                for (DataSnapshot item : snapshot.getChildren()) {
+                    Artist artist = item.getValue(Artist.class);
+                    if (artist != null) {
+                        artistList.add(artist);
+                    }
+                }
+                artistAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.e(TAG, "Lỗi tải artists: " + error.getMessage());
+                Toast.makeText(getContext(), "Lỗi tải artists.", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -206,6 +273,8 @@ public class HomeFragment extends Fragment {
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
+                Log.e(TAG, "Lỗi tải favourites playlist: " + error.getMessage());
+                Toast.makeText(getContext(), "Lỗi tải favourites playlist.", Toast.LENGTH_SHORT).show();
             }
         });
     }

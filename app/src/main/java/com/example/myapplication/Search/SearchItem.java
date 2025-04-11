@@ -9,6 +9,8 @@ public abstract class SearchItem {
 
     public abstract int getType();
 
+    public abstract boolean matches(String query);
+
     // ---------------------------
     // Song Item
     // ---------------------------
@@ -26,6 +28,14 @@ public abstract class SearchItem {
         @Override
         public int getType() {
             return TYPE_SONG;
+        }
+
+        @Override
+        public boolean matches(String query) {
+            if (song == null || query == null) return false;
+            String lowerQuery = query.toLowerCase();
+            return (song.getTitle() != null && song.getTitle().toLowerCase().contains(lowerQuery)) ||
+                    (song.getArtist() != null && song.getArtist().toLowerCase().contains(lowerQuery));
         }
     }
 
@@ -46,6 +56,13 @@ public abstract class SearchItem {
         @Override
         public int getType() {
             return TYPE_PLAYLIST;
+        }
+
+        @Override
+        public boolean matches(String query) {
+            if (playlist == null || query == null) return false;
+            String lowerQuery = query.toLowerCase();
+            return playlist.getPlaylistName() != null && playlist.getPlaylistName().toLowerCase().contains(lowerQuery);
         }
     }
 }

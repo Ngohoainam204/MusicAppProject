@@ -1,6 +1,6 @@
 package com.example.myapplication.item_nav;
 
-import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -15,11 +15,12 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.myapplication.nowplaying.NowPlayingActivity;
+import com.example.myapplication.nowplaying.PlaylistDetailActivity;
 import com.example.myapplication.R;
 import com.example.myapplication.adapters.SearchAdapter;
 import com.example.myapplication.models.Playlist;
 import com.example.myapplication.models.Song;
-import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.database.*;
 
 import java.util.ArrayList;
@@ -45,6 +46,28 @@ public class Search_Fragment extends Fragment {
         searchAdapter = new SearchAdapter(getContext());
         rvSearch.setAdapter(searchAdapter);
         rvSearch.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        // Gán listener xử lý khi click
+        searchAdapter.setOnItemClickListener(new SearchAdapter.OnItemClickListener() {
+            @Override
+            public void onSongClick(Song song) {
+                if (getContext() != null) {
+                    Intent intent = new Intent(getContext(), NowPlayingActivity.class);
+                    intent.putExtra("song_id", song.getSongId());
+                    intent.putExtra("song_lyrics", song.getLyrics());
+                    startActivity(intent);
+                }
+            }
+
+            @Override
+            public void onPlaylistClick(Playlist playlist) {
+                if (getContext() != null) {
+                    Intent intent = new Intent(getContext(), PlaylistDetailActivity.class);
+                    intent.putExtra("playlist_id", playlist.getPlaylistId());
+                    startActivity(intent);
+                }
+            }
+        });
 
         loadAllData();
 

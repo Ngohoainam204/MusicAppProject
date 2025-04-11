@@ -59,11 +59,11 @@ public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.Playli
         if (playlist.getCoverUrl() != null && !playlist.getCoverUrl().isEmpty()) {
             Glide.with(context)
                     .load(playlist.getCoverUrl())
-                    .placeholder(R.drawable.icon_song) // Add a placeholder image
-                    .error(R.drawable.icon_song)       // Show error image if loading fails
+                    .placeholder(R.drawable.music) // Add a placeholder image
+                    .error(R.drawable.music)       // Show error image if loading fails
                     .into(holder.ivCover);
         } else {
-            holder.ivCover.setImageResource(R.drawable.icon_song);
+            holder.ivCover.setImageResource(R.drawable.music);
         }
 
         if (favouritePlaylistIds.contains(playlist.getId())) {

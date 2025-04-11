@@ -1,6 +1,9 @@
 package com.example.myapplication.models;
 
-public class Song {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+public class Song implements Parcelable {
     private String songId;
     private String title;
     private String artist;
@@ -8,7 +11,7 @@ public class Song {
     private String coverUrl;
     private String duration;
     private String lyrics;
-    private boolean isFavourite;  // Thêm thuộc tính này
+    private boolean isFavourite;
 
     public Song() {
     }
@@ -22,6 +25,29 @@ public class Song {
         this.duration = duration;
         this.lyrics = lyrics;
     }
+
+    protected Song(Parcel in) {
+        songId = in.readString();
+        title = in.readString();
+        artist = in.readString();
+        fileUrl = in.readString();
+        coverUrl = in.readString();
+        duration = in.readString();
+        lyrics = in.readString();
+        isFavourite = in.readByte() != 0;
+    }
+
+    public static final Creator<Song> CREATOR = new Creator<Song>() {
+        @Override
+        public Song createFromParcel(Parcel in) {
+            return new Song(in);
+        }
+
+        @Override
+        public Song[] newArray(int size) {
+            return new Song[size];
+        }
+    };
 
     public String getSongId() {
         return songId;
@@ -85,5 +111,22 @@ public class Song {
 
     public void setFavourite(boolean favourite) {
         isFavourite = favourite;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(songId);
+        dest.writeString(title);
+        dest.writeString(artist);
+        dest.writeString(fileUrl);
+        dest.writeString(coverUrl);
+        dest.writeString(duration);
+        dest.writeString(lyrics);
+        dest.writeByte((byte) (isFavourite ? 1 : 0));
     }
 }

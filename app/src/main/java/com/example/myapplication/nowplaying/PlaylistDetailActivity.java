@@ -1,5 +1,6 @@
 package com.example.myapplication.nowplaying;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.ImageView;
@@ -12,16 +13,24 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
 import com.example.myapplication.R;
+import com.example.myapplication.Search.SearchItem;
 import com.example.myapplication.adapters.SearchAdapter;
 import com.example.myapplication.models.Playlist;
 import com.example.myapplication.models.Song;
-import com.example.myapplication.Search.SearchItem;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.*;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
 
 public class PlaylistDetailActivity extends AppCompatActivity {
 
@@ -32,7 +41,7 @@ public class PlaylistDetailActivity extends AppCompatActivity {
     private TextView txtTitle;
     private RecyclerView recyclerSongs;
     private SearchAdapter searchAdapter;
-    private List<SearchItem> searchItems = new ArrayList<>();
+    private List<SearchItem.SongItem> searchItems = new ArrayList<>();
     private HashMap<String, Song> allSongs = new HashMap<>();
     private String playlistId;
     private boolean isFavorite = false;
@@ -46,13 +55,10 @@ public class PlaylistDetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_playlist_detail);
 
-        Log.d("PlaylistDetail", "onCreate: Activity started");
-
         auth = FirebaseAuth.getInstance();
         databaseRef = FirebaseDatabase.getInstance(DB_URL).getReference();
         favoritesRef = databaseRef.child("FavouritesPlaylist");
 
-        // Bind UI
         btnBack = findViewById(R.id.btn_back);
         imgPlaylistCover = findViewById(R.id.img_playlist_cover);
         txtTitle = findViewById(R.id.txt_playlist_title);
@@ -60,42 +66,61 @@ public class PlaylistDetailActivity extends AppCompatActivity {
         btnAddToFavorites = findViewById(R.id.btn_add_to_favorites);
         recyclerSongs = findViewById(R.id.recycler_playlist_detail);
         recyclerSongs.setLayoutManager(new LinearLayoutManager(this));
-        searchAdapter = new SearchAdapter(this, searchItems);
+        ImageView btnPlayIcon = findViewById(R.id.btn_play_icon);
 
-        Log.d("PlaylistDetail", "Contents of searchItems before setting adapter:");
-        for (SearchItem item : searchItems) {
-            if (item instanceof SearchItem.SongItem) {
-                Log.d("PlaylistDetail", "- Song: " + ((SearchItem.SongItem) item).getSong().getTitle());
-            } else if (item instanceof SearchItem.PlaylistItem) {
-                Log.d("PlaylistDetail", "- Playlist: " + ((SearchItem.PlaylistItem) item).getPlaylist().getPlaylistName());
-            }
-        }
-
+        searchAdapter = new SearchAdapter(this);
         recyclerSongs.setAdapter(searchAdapter);
+
+        searchAdapter.setOnItemClickListener(new SearchAdapter.OnItemClickListener() {
+            @Override
+            public void onSongClick(Song song) {
+                ArrayList<Song> songList = new ArrayList<>();
+                for (SearchItem.SongItem item : searchItems) {
+                    songList.add(item.getSong());
+                }
+
+                Intent intent = new Intent(PlaylistDetailActivity.this, NowPlayingActivity.class);
+                intent.putExtra("song_id", song.getSongId());
+                intent.putParcelableArrayListExtra("playlist_songs", songList); // <-- đúng cách
+                startActivity(intent);
+
+            }
+
+            @Override
+            public void onPlaylistClick(Playlist playlist) {
+                // Không xử lý ở đây
+            }
+        });
 
         playlistId = getIntent().getStringExtra(EXTRA_PLAYLIST_ID);
         String playlistName = getIntent().getStringExtra(EXTRA_PLAYLIST_NAME);
         txtTitle.setText(playlistName != null ? playlistName : "Playlist");
 
-        Log.d("PlaylistDetail", "onCreate: Playlist ID: " + playlistId);
         loadAllSongs(() -> loadPlaylistDetails(playlistId));
 
-        btnBack.setOnClickListener(v -> {
-            Log.d("PlaylistDetail", "onClick: Back button clicked");
-            onBackPressed();
+        btnBack.setOnClickListener(v -> onBackPressed());
+        btnShuffle.setOnClickListener(v -> shuffleSongs());
+        btnAddToFavorites.setOnClickListener(v -> toggleFavoritePlaylist());
+        btnPlayIcon.setOnClickListener(v -> {
+            if (!searchItems.isEmpty()) {
+                Song firstSong = searchItems.get(0).getSong();
+                ArrayList<Song> songList = new ArrayList<>();
+                for (SearchItem.SongItem item : searchItems) {
+                    songList.add(item.getSong());
+                }
+
+                Intent intent = new Intent(PlaylistDetailActivity.this, NowPlayingActivity.class);
+                intent.putExtra("song_id", firstSong.getSongId());
+                intent.putParcelableArrayListExtra("playlist_songs", songList);
+                startActivity(intent);
+            } else {
+                Toast.makeText(this, "Danh sách bài hát trống", Toast.LENGTH_SHORT).show();
+            }
         });
-        btnShuffle.setOnClickListener(v -> {
-            Log.d("PlaylistDetail", "onClick: Shuffle button clicked");
-            shuffleSongs();
-        });
-        btnAddToFavorites.setOnClickListener(v -> {
-            Log.d("PlaylistDetail", "onClick: Add to Favorites button clicked");
-            toggleFavoritePlaylist();
-        });
+
     }
 
     private void loadAllSongs(Runnable onLoaded) {
-        Log.d("PlaylistDetail", "loadAllSongs: Loading all songs from database");
         databaseRef.child("Songs").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -106,24 +131,18 @@ public class PlaylistDetailActivity extends AppCompatActivity {
                         allSongs.put(song.getSongId(), song);
                     }
                 }
-                Log.d("PlaylistDetail", "loadAllSongs: Songs loaded, total: " + allSongs.size());
                 if (onLoaded != null) onLoaded.run();
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                Log.e("PlaylistDetail", "❌ Error loading songs: " + error.getMessage());
+                Log.e("PlaylistDetail", "Error loading songs: " + error.getMessage());
             }
         });
     }
 
     private void loadPlaylistDetails(String playlistId) {
-        if (playlistId == null) {
-            Log.e("PlaylistDetail", "loadPlaylistDetails: Playlist ID is null");
-            return;
-        }
-
-        Log.d("PlaylistDetail", "loadPlaylistDetails: Loading details for playlist ID: " + playlistId);
+        if (playlistId == null) return;
 
         databaseRef.child("Playlists").child(playlistId)
                 .addListenerForSingleValueEvent(new ValueEventListener() {
@@ -131,96 +150,76 @@ public class PlaylistDetailActivity extends AppCompatActivity {
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         Playlist playlist = snapshot.getValue(Playlist.class);
                         if (playlist != null && playlist.getListOfSongIds() != null && !playlist.getListOfSongIds().isEmpty()) {
-                            Log.d("PlaylistDetail", "loadPlaylistDetails: Playlist loaded: " + playlist.getPlaylistName());
-                            loadPlaylistSongs(playlist); // Gọi loadPlaylistSongs() trước khi thiết lập adapter
+                            loadPlaylistSongs(playlist);
                             checkIfFavorite();
                         } else {
-                            Log.w("PlaylistDetail", "⚠️ Playlist is empty or listOfSongIds is empty");
+                            Toast.makeText(PlaylistDetailActivity.this, "Playlist không có bài hát", Toast.LENGTH_SHORT).show();
                         }
                     }
 
                     @Override
                     public void onCancelled(@NonNull DatabaseError error) {
-                        Log.e("PlaylistDetail", "❌ Error loading playlist details: " + error.getMessage());
+                        Log.e("PlaylistDetail", "Error loading playlist details: " + error.getMessage());
                     }
                 });
     }
 
-
     private void loadPlaylistSongs(Playlist playlist) {
-        if (playlist == null || playlist.getListOfSongIds() == null || playlist.getListOfSongIds().isEmpty()) {
-            Log.w("PlaylistDetail", "loadPlaylistSongs: Playlist or song list is empty");
-            searchItems.clear();
-            searchAdapter.notifyDataSetChanged();
-            return;
-        }
-
-        Log.d("PlaylistDetail", "loadPlaylistSongs: Loading songs for playlist");
-
-        searchItems.clear(); // Clear the current list of items
-        List<SearchItem> tempSearchItems = new ArrayList<>(); // Tạo một danh sách tạm thời
+        List<SearchItem> newItems = new ArrayList<>();
+        searchItems.clear();
 
         for (String songId : playlist.getListOfSongIds()) {
             Song song = allSongs.get(songId);
             if (song != null) {
-                tempSearchItems.add(new SearchItem.SongItem(song)); // Thêm vào danh sách tạm thời
-                Log.d("PlaylistDetail", "Song added to temp list: " + song.getSongId() + ", Title: " + song.getTitle());
-            } else {
-                Log.w("PlaylistDetail", "⚠️ Song not found: " + songId);
+                SearchItem.SongItem item = new SearchItem.SongItem(song);
+                searchItems.add(item);
+                newItems.add(item);
             }
         }
-
-        searchItems.addAll(tempSearchItems); // Thêm tất cả item từ danh sách tạm thời vào danh sách chính
-        Log.d("PlaylistDetail", "loadPlaylistSongs: Size of searchItems before notify: " + searchItems.size());
-        searchAdapter.notifyDataSetChanged(); // Gọi notify sau khi đã thêm hết
-
-        // Tạo một adapter mới và thiết lập lại cho RecyclerView
-        searchAdapter = new SearchAdapter(PlaylistDetailActivity.this, searchItems);
-        recyclerSongs.setAdapter(searchAdapter);
-
-        Log.d("PlaylistDetail", "New adapter set after loading songs");
+        searchAdapter.updateItems(newItems);
     }
-
 
     private void shuffleSongs() {
-        if (!searchItems.isEmpty()) {
-            Collections.shuffle(searchItems, new Random(System.currentTimeMillis()));
-            searchAdapter.notifyDataSetChanged();
-            Toast.makeText(this, "Bài hát đã được trộn", Toast.LENGTH_SHORT).show();
-            Log.d("PlaylistDetail", "shuffleSongs: Songs shuffled");
-        } else {
-            Toast.makeText(this, "Không có bài hát để trộn", Toast.LENGTH_SHORT).show();
-            Log.d("PlaylistDetail", "shuffleSongs: No songs to shuffle");
+        if (searchItems.isEmpty()) return;
+
+        // Trộn danh sách hiển thị
+        Collections.shuffle(searchItems, new Random(System.currentTimeMillis()));
+        searchAdapter.updateItems(new ArrayList<>(searchItems));
+        Toast.makeText(this, "Bài hát đã được trộn", Toast.LENGTH_SHORT).show();
+
+        // Cập nhật danh sách lên Firebase
+        List<String> shuffledSongIds = new ArrayList<>();
+        for (SearchItem.SongItem item : searchItems) {
+            shuffledSongIds.add(item.getSong().getSongId());
         }
+
+        databaseRef.child("Playlists").child(playlistId).child("listOfSongIds")
+                .setValue(shuffledSongIds)
+                .addOnSuccessListener(aVoid -> Log.d("PlaylistDetail", "Đã cập nhật danh sách bài hát đã trộn lên Firebase"))
+                .addOnFailureListener(e -> Log.e("PlaylistDetail", "Lỗi khi cập nhật Firebase: " + e.getMessage()));
     }
 
+
     private void checkIfFavorite() {
-        if (auth.getCurrentUser() == null || playlistId == null) {
-            Log.d("PlaylistDetail", "checkIfFavorite: User not logged in or Playlist ID is null");
-            return;
-        }
+        if (auth.getCurrentUser() == null || playlistId == null) return;
 
         String userId = auth.getCurrentUser().getEmail().replace(".", "_");
-        Log.d("PlaylistDetail", "checkIfFavorite: Checking if playlist is favorite for user: " + userId);
-
         favoritesRef.child(userId).child(playlistId)
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         isFavorite = snapshot.exists();
-                        Log.d("PlaylistDetail", "checkIfFavorite: Is favorite: " + isFavorite);
                         updateFavoriteIcon();
                     }
 
                     @Override
                     public void onCancelled(@NonNull DatabaseError error) {
-                        Log.e("PlaylistDetail", "Lỗi kiểm tra trạng thái yêu thích: " + error.getMessage());
+                        Log.e("PlaylistDetail", "Error checking favorite: " + error.getMessage());
                     }
                 });
     }
 
     private void updateFavoriteIcon() {
-        Log.d("PlaylistDetail", "updateFavoriteIcon: Updating favorite icon");
         btnAddToFavorites.setImageResource(
                 isFavorite ? R.drawable.ic_heart_selection_true : R.drawable.ic_heart_selection
         );
@@ -229,48 +228,40 @@ public class PlaylistDetailActivity extends AppCompatActivity {
     private void toggleFavoritePlaylist() {
         if (auth.getCurrentUser() == null) {
             Toast.makeText(this, "Bạn cần đăng nhập để thêm vào yêu thích", Toast.LENGTH_SHORT).show();
-            Log.d("PlaylistDetail", "toggleFavoritePlaylist: User not logged in");
             return;
         }
 
         String userId = auth.getCurrentUser().getEmail().replace(".", "_");
 
-        if (playlistId != null) {
-            Log.d("PlaylistDetail", "toggleFavoritePlaylist: Toggling favorite status for playlist ID: " + playlistId);
-            favoritesRef.child(userId).child(playlistId)
-                    .addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot snapshot) {
-                            if (snapshot.exists()) {
-                                favoritesRef.child(userId).child(playlistId).removeValue()
-                                        .addOnSuccessListener(aVoid -> {
-                                            isFavorite = false;
-                                            updateFavoriteIcon();
-                                            Toast.makeText(PlaylistDetailActivity.this, "Đã xóa khỏi playlist yêu thích", Toast.LENGTH_SHORT).show();
-                                            Log.d("PlaylistDetail", "toggleFavoritePlaylist: Playlist removed from favorites");
-                                        })
-                                        .addOnFailureListener(e -> Toast.makeText(PlaylistDetailActivity.this, "Lỗi khi xóa khỏi yêu thích", Toast.LENGTH_SHORT).show());
-                            } else {
-                                Map<String, Object> favorite = new HashMap<>();
-                                favorite.put("playlistId", playlistId);
-                                favorite.put("addedDate", System.currentTimeMillis());
+        favoritesRef.child(userId).child(playlistId)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        if (snapshot.exists()) {
+                            favoritesRef.child(userId).child(playlistId).removeValue()
+                                    .addOnSuccessListener(aVoid -> {
+                                        isFavorite = false;
+                                        updateFavoriteIcon();
+                                        Toast.makeText(PlaylistDetailActivity.this, "Đã xóa khỏi playlist yêu thích", Toast.LENGTH_SHORT).show();
+                                    });
+                        } else {
+                            Map<String, Object> favorite = new HashMap<>();
+                            favorite.put("playlistId", playlistId);
+                            favorite.put("addedDate", System.currentTimeMillis());
 
-                                favoritesRef.child(userId).child(playlistId).setValue(favorite)
-                                        .addOnSuccessListener(aVoid -> {
-                                            isFavorite = true;
-                                            updateFavoriteIcon();
-                                            Toast.makeText(PlaylistDetailActivity.this, "Đã thêm vào playlist yêu thích", Toast.LENGTH_SHORT).show();
-                                            Log.d("PlaylistDetail", "toggleFavoritePlaylist: Playlist added to favorites");
-                                        })
-                                        .addOnFailureListener(e -> Toast.makeText(PlaylistDetailActivity.this, "Lỗi khi thêm vào yêu thích", Toast.LENGTH_SHORT).show());
-                            }
+                            favoritesRef.child(userId).child(playlistId).setValue(favorite)
+                                    .addOnSuccessListener(aVoid -> {
+                                        isFavorite = true;
+                                        updateFavoriteIcon();
+                                        Toast.makeText(PlaylistDetailActivity.this, "Đã thêm vào playlist yêu thích", Toast.LENGTH_SHORT).show();
+                                    });
                         }
+                    }
 
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError error) {
-                            Log.e("PlaylistDetail", "❌ Error toggling favorite: " + error.getMessage());
-                        }
-                    });
-        }
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                        Log.e("PlaylistDetail", "Error toggling favorite: " + error.getMessage());
+                    }
+                });
     }
 }

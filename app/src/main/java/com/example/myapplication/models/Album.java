@@ -1,23 +1,13 @@
 package com.example.myapplication.models;
 
-import java.util.List;
-
 public class Album {
     private String albumId;
-    private String name;
-    private String artistId;
+    private String albumName;
+    private String artist;
     private String coverUrl;
-    private List<String> songIds;
+    private java.util.List<String> listOfSongIds; // Sử dụng java.util.List để đảm bảo khớp
 
     public Album() {
-    }
-
-    public Album(String albumId, String name, String artistId, String coverUrl, List<String> songIds) {
-        this.albumId = albumId;
-        this.name = name;
-        this.artistId = artistId;
-        this.coverUrl = coverUrl;
-        this.songIds = songIds;
     }
 
     public String getAlbumId() {
@@ -28,20 +18,20 @@ public class Album {
         this.albumId = albumId;
     }
 
-    public String getName() {
-        return name;
+    public String getAlbumName() {
+        return albumName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setAlbumName(String albumName) {
+        this.albumName = albumName;
     }
 
-    public String getArtistId() {
-        return artistId;
+    public String getArtist() {
+        return artist;
     }
 
-    public void setArtistId(String artistId) {
-        this.artistId = artistId;
+    public void setArtist(String artist) {
+        this.artist = artist;
     }
 
     public String getCoverUrl() {
@@ -52,11 +42,11 @@ public class Album {
         this.coverUrl = coverUrl;
     }
 
-    public List<String> getSongIds() {
-        return songIds;
+    public java.util.List<String> getListOfSongIds() {
+        return listOfSongIds;
     }
 
-    public void setSongIds(List<String> songIds) {
-        this.songIds = songIds;
+    public void setListOfSongIds(java.util.List<String> listOfSongIds) {
+        this.listOfSongIds = listOfSongIds;
     }
 }

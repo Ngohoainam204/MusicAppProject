@@ -12,25 +12,24 @@
         android:clipToPadding="false"
         android:paddingStart="8dp"
         android:paddingEnd="8dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- Indicator (chấm tròn) dưới banner -->
+    <!-- Indicator dưới banner -->
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tabIndicator"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
         app:tabIndicatorColor="@android:color/white"
         app:tabSelectedTextColor="@android:color/white"
         app:tabTextColor="@android:color/darker_gray"
         app:layout_constraintTop_toBottomOf="@id/viewPagerBanner"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="4dp" />
+        app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- Header với logo Spotify -->
+    <!-- Header Spotify (hiện chưa có nội dung) -->
     <LinearLayout
         android:id="@+id/headerLayout"
         android:layout_width="match_parent"
@@ -41,10 +40,7 @@
         android:background="@android:color/transparent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
-
-
-    </LinearLayout>
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <!-- Tiêu đề Playlist -->
     <TextView
@@ -59,13 +55,61 @@
         app:layout_constraintTop_toBottomOf="@id/tabIndicator"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <!-- Danh sách bài hát -->
+    <!-- RecyclerView Playlist -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_playlist_home"
         android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="8dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintTop_toBottomOf="@id/tvPlaylistTitle"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- Tiêu đề Album -->
+    <TextView
+        android:id="@+id/tvAlbumTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Album"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:paddingStart="16dp"
+        android:paddingTop="16dp"
+        app:layout_constraintTop_toBottomOf="@id/recycler_playlist_home"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <!-- RecyclerView Album -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_album_home"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="8dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintTop_toBottomOf="@id/tvAlbumTitle"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- Tiêu đề Artist -->
+    <TextView
+        android:id="@+id/tvArtistTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Artist"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:paddingStart="16dp"
+        android:paddingTop="16dp"
+        app:layout_constraintTop_toBottomOf="@id/recycler_album_home"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <!-- RecyclerView Artist -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_artist_home"
+        android:layout_width="match_parent"
         android:layout_height="0dp"
         android:padding="8dp"
-        app:layout_constraintTop_toBottomOf="@id/tvPlaylistTitle"
+        app:layout_constraintTop_toBottomOf="@id/tvArtistTitle"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />

@@ -1,17 +1,15 @@
 package com.example.myapplication.models;
 
+import java.util.List;
+
 public class Artist {
     private String artistId;
-    private String name;
-    private String imageUrl;
+    private String artistName; // Đã đổi 'name' thành 'artistName'
+    private String avatarUrl; // Đã thêm
+    private String bio;       // Đã thêm
+    private List<String> listOfSongIds; // Đã thêm
 
     public Artist() {
-    }
-
-    public Artist(String artistId, String name, String imageUrl) {
-        this.artistId = artistId;
-        this.name = name;
-        this.imageUrl = imageUrl;
     }
 
     public String getArtistId() {
@@ -22,19 +20,35 @@ public class Artist {
         this.artistId = artistId;
     }
 
-    public String getName() {
-        return name;
+    public String getArtistName() {
+        return artistName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setArtistName(String artistName) {
+        this.artistName = artistName;
     }
 
-    public String getImageUrl() {
-        return imageUrl;
+    public String getAvatarUrl() {
+        return avatarUrl;
     }
 
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
+    public void setAvatarUrl(String avatarUrl) {
+        this.avatarUrl = avatarUrl;
+    }
+
+    public String getBio() {
+        return bio;
+    }
+
+    public void setBio(String bio) {
+        this.bio = bio;
+    }
+
+    public List<String> getListOfSongIds() {
+        return listOfSongIds;
+    }
+
+    public void setListOfSongIds(List<String> listOfSongIds) {
+        this.listOfSongIds = listOfSongIds;
     }
 }

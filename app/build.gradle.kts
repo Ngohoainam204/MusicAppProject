@@ -9,7 +9,7 @@ android {
 
     defaultConfig {
         applicationId = "com.example.myapplication"
-        minSdk = 21
+        minSdk = 24
         targetSdk = 35
         versionCode = 1
         versionName = "1.0"
@@ -36,7 +36,7 @@ android {
 }
 
 dependencies {
-    implementation ("com.google.android.material:material:1.11.0") // hoặc phiên bản mới nhất
+    implementation("com.google.android.material:material:1.11.0") // hoặc phiên bản mới nhất
 
     implementation(libs.glide)
     implementation("com.tbuonomo:dotsindicator:4.3")
@@ -53,7 +53,7 @@ dependencies {
     implementation("com.google.firebase:firebase-analytics-ktx")
     implementation("com.google.firebase:firebase-auth-ktx")
     implementation("com.google.firebase:firebase-database-ktx")
-    implementation ("com.google.android.gms:play-services-auth:21.0.0")
+    implementation("com.google.android.gms:play-services-auth:21.0.0")
 
     // Networking
     implementation(libs.retrofit)
