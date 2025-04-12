@@ -1,4 +1,4 @@
-package com.example.myapplication;
+package com.example.myapplication.main;
 
 import android.os.Bundle;
 
@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
+import com.example.myapplication.R;
 import com.example.myapplication.item_nav.Search_Fragment;
 import com.example.myapplication.item_nav.LibraryFragment;
 import com.example.myapplication.item_nav.HomeFragment;

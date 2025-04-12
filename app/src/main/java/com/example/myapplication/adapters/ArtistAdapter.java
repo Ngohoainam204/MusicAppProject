@@ -1,6 +1,7 @@
 package com.example.myapplication.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.myapplication.R;
+import com.example.myapplication.detail.ArtistDetailActivity; // Import ArtistDetailActivity
 import com.example.myapplication.models.Artist;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.*;
@@ -92,6 +94,13 @@ public class ArtistAdapter extends RecyclerView.Adapter<ArtistAdapter.ArtistView
 
         holder.itemView.setOnClickListener(v -> {
             if (listener != null) listener.onArtistClick(artist);
+            // Mở ArtistDetailActivity khi item được click
+            Intent intent = new Intent(context, ArtistDetailActivity.class);
+            intent.putExtra("artistId", artist.getArtistId());
+            intent.putExtra("artistName", artist.getArtistName());
+            intent.putExtra("avatarUrl", artist.getAvatarUrl());
+            intent.putExtra("bio", artist.getBio());
+            context.startActivity(intent);
         });
     }
 
@@ -130,7 +139,7 @@ public class ArtistAdapter extends RecyclerView.Adapter<ArtistAdapter.ArtistView
             super(itemView);
             avatarImageView = itemView.findViewById(R.id.img_artist_avatar);
             artistNameTextView = itemView.findViewById(R.id.txt_artist_name);
-            ivFavourite = itemView.findViewById(R.id.icon_artist_favourite); // bạn cần thêm trong layout
+            ivFavourite = itemView.findViewById(R.id.icon_favourite_artist); // bạn cần thêm trong layout
         }
     }
 

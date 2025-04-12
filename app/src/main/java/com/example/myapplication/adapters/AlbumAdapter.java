@@ -2,6 +2,7 @@ package com.example.myapplication.adapters;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.myapplication.R;
+import com.example.myapplication.detail.AlbumDetailActivity;
 import com.example.myapplication.models.Album;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.*;
@@ -26,16 +28,6 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.AlbumViewHol
     private final Context context;
     private List<Album> albumList;
     private static final String DB_URL = "https://musicplayerapp-aed33-default-rtdb.asia-southeast1.firebasedatabase.app";
-
-    public interface OnAlbumClickListener {
-        void onAlbumClick(Album album);
-    }
-
-    private OnAlbumClickListener listener;
-
-    public void setOnAlbumClickListener(OnAlbumClickListener listener) {
-        this.listener = listener;
-    }
 
     public AlbumAdapter(Context context, List<Album> albumList) {
         this.context = context;
@@ -92,8 +84,11 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.AlbumViewHol
             }
         });
 
+        // Set click listener to open AlbumDetailActivity and pass albumId
         holder.itemView.setOnClickListener(v -> {
-            if (listener != null) listener.onAlbumClick(album);
+            Intent intent = new Intent(context, AlbumDetailActivity.class);
+            intent.putExtra("album_id", album.getAlbumId());  // Pass the albumId to the next activity
+            context.startActivity(intent);
         });
     }
 
@@ -134,7 +129,7 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.AlbumViewHol
             coverImageView = itemView.findViewById(R.id.img_album);
             albumNameTextView = itemView.findViewById(R.id.txt_album_name);
             artistTextView = itemView.findViewById(R.id.txt_album_artist_name);
-            ivFavourite = itemView.findViewById(R.id.icon_album_favourite);
+            ivFavourite = itemView.findViewById(R.id.icon_favourite_album);
         }
     }
 

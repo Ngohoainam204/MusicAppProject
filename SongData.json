@@ -142,7 +142,15 @@
       "title": "OST Hàn Quốc"
     }
   ],
+  "FavouritesAlbums": {
+    "namnaofumi2004@gmail_com": {
+      "ab_1": true
+    }
+  },
   "FavouritesArtists": {
+    "namnaofumi2004@gmail_com": {
+      "ar_2": true
+    },
     "ngonam2k4@gmail_com": {
       "ar_1": {
         "addedDate": 1744384249343,
@@ -170,16 +178,24 @@
     ],
     "namnaofumi2004@gmail_com": [
       {
-        "addedDate": 1744381956183,
+        "addedDate": 1744462067154,
         "playlistId": "0"
+      },
+      {
+        "addedDate": 1744460709665,
+        "playlistId": "1"
       }
     ],
-    "ngonam2k4@gmail_com": [
-      {
+    "ngonam2k4@gmail_com": {
+      "0": {
         "addedDate": 1744349984189,
         "playlistId": "0"
+      },
+      "pl_1": {
+        "addedDate": 1744395737002,
+        "playlistId": "pl_1"
       }
-    ]
+    }
   },
   "FavouritesSongs": {
     "dbh2622004@gmail_com": {
@@ -187,11 +203,9 @@
       "6": true
     },
     "namnaofumi2004@gmail_com": {
-      "song_1": true,
-      "song_10": true
+      "song_1": true
     },
     "ngonam2k4@gmail_com": {
-      "4": true,
       "8": true,
       "9": true,
       "10": true,

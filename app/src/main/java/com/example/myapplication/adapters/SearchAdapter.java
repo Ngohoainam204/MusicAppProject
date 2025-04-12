@@ -125,6 +125,60 @@ public class SearchAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         filter("");
     }
 
+    // ========================= Helper Methods ==============================
+
+    private void updateFavoriteIcon(ImageView icon, boolean isFavorite) {
+        icon.setImageResource(isFavorite ? R.drawable.ic_heart_selection_true : R.drawable.ic_heart_selection);
+    }
+
+    private void toggleFavorite(String userId, String itemId, String node, ImageView icon, String successAdd, String successRemove) {
+        DatabaseReference ref = FirebaseDatabase.getInstance(DB_URL).getReference("Favourites" + node)
+                .child(userId).child(itemId);
+
+        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                boolean isCurrentlyFavorite = snapshot.exists();
+                if (isCurrentlyFavorite) {
+                    ref.removeValue().addOnSuccessListener(aVoid -> {
+                        Toast.makeText(context, successRemove, Toast.LENGTH_SHORT).show();
+                        updateFavoriteIcon(icon, false);
+                    });
+                } else {
+                    ref.setValue(true).addOnSuccessListener(aVoid -> {
+                        Toast.makeText(context, successAdd, Toast.LENGTH_SHORT).show();
+                        updateFavoriteIcon(icon, true);
+                    });
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.e("SearchAdapter", "Lỗi thao tác yêu thích " + node + ": " + error.getMessage());
+            }
+        });
+    }
+
+    private void checkFavoriteStatus(String userId, String itemId, String node, ImageView icon) {
+        if (userId != null) {
+            DatabaseReference favRef = FirebaseDatabase.getInstance(DB_URL).getReference("Favourites" + node)
+                    .child(userId).child(itemId);
+            favRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    updateFavoriteIcon(icon, snapshot.exists());
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                    Log.e("SearchAdapter", "Lỗi kiểm tra yêu thích " + node + ": " + error.getMessage());
+                }
+            });
+        } else {
+            icon.setOnClickListener(v -> Toast.makeText(context, "Bạn cần đăng nhập để yêu thích", Toast.LENGTH_SHORT).show());
+        }
+    }
+
     // ========================= ViewHolders ==============================
 
     class SongViewHolder extends RecyclerView.ViewHolder {
@@ -151,71 +205,34 @@ public class SearchAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             String userId = FirebaseAuth.getInstance().getCurrentUser() != null
                     ? FirebaseAuth.getInstance().getCurrentUser().getEmail().replace(".", "_") : null;
 
-            if (userId == null) {
-                ivFavourite.setOnClickListener(v ->
-                        Toast.makeText(context, "Bạn cần đăng nhập để yêu thích bài hát", Toast.LENGTH_SHORT).show());
-                return;
-            }
+            checkFavoriteStatus(userId, song.getSongId(), "Songs", ivFavourite);
 
-            DatabaseReference favRef = FirebaseDatabase.getInstance(DB_URL).getReference("FavouritesSongs")
-                    .child(userId).child(song.getSongId());
-
-            favRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    boolean isFavorite = snapshot.exists();
-                    updateFavoriteIcon(isFavorite);
-
-                    ivFavourite.setOnClickListener(v -> {
-                        toggleFavorite(song, isFavorite);
-                    });
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
-                    Log.e("SearchAdapter", "Lỗi kiểm tra yêu thích: " + error.getMessage());
-                }
+            ivFavourite.setOnClickListener(v -> {
+                toggleFavorite(userId, song.getSongId(), "Songs", ivFavourite,
+                        "Đã thêm vào yêu thích", "Đã xóa khỏi yêu thích");
             });
 
             itemView.setOnClickListener(v -> {
                 if (listener != null) listener.onSongClick(song);
             });
         }
-
-        private void updateFavoriteIcon(boolean isFavorite) {
-            ivFavourite.setImageResource(isFavorite ? R.drawable.ic_heart_selection_true : R.drawable.ic_heart_selection);
-        }
-
-        private void toggleFavorite(Song song, boolean isFavorite) {
-            String userId = FirebaseAuth.getInstance().getCurrentUser().getEmail().replace(".", "_");
-            DatabaseReference ref = FirebaseDatabase.getInstance(DB_URL).getReference("FavouritesSongs")
-                    .child(userId).child(song.getSongId());
-
-            if (isFavorite) {
-                ref.removeValue().addOnSuccessListener(aVoid -> {
-                    Toast.makeText(context, "Đã xóa khỏi yêu thích", Toast.LENGTH_SHORT).show();
-                    updateFavoriteIcon(false);
-                });
-            } else {
-                ref.setValue(true).addOnSuccessListener(aVoid -> {
-                    Toast.makeText(context, "Đã thêm vào yêu thích", Toast.LENGTH_SHORT).show();
-                    updateFavoriteIcon(true);
-                });
-            }
-        }
     }
 
     class PlaylistViewHolder extends RecyclerView.ViewHolder {
         private final TextView tvPlaylistName;
-        private final ImageView ivPlaylistCover;
+        private final ImageView ivPlaylistCover, ivFavourite;
 
         public PlaylistViewHolder(@NonNull View itemView) {
             super(itemView);
             tvPlaylistName = itemView.findViewById(R.id.txt_playlist_name);
             ivPlaylistCover = itemView.findViewById(R.id.img_playlist);
+            ivFavourite = itemView.findViewById(R.id.icon_favourite_playlist);
         }
 
         public void bind(Playlist playlist) {
+            Log.d("SearchAdapter", "Bind playlist: " + playlist.getPlaylistName());
+            Log.d("SearchAdapter", "Playlist ID: " + playlist.getPlaylistId());
+
             if (playlist == null) return;
 
             tvPlaylistName.setText(playlist.getPlaylistName());
@@ -223,6 +240,20 @@ public class SearchAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                     .load(playlist.getCoverUrl())
                     .placeholder(R.drawable.music)
                     .into(ivPlaylistCover);
+
+            String userId = FirebaseAuth.getInstance().getCurrentUser() != null
+                    ? FirebaseAuth.getInstance().getCurrentUser().getEmail().replace(".", "_") : null;
+
+            checkFavoriteStatus(userId, playlist.getPlaylistId(), "Playlist", ivFavourite);
+
+            ivFavourite.setOnClickListener(v -> {
+                if (playlist.getPlaylistId() != null && !playlist.getPlaylistId().equals("0")) {
+                    toggleFavorite(userId, playlist.getPlaylistId(), "Playlist", ivFavourite,
+                            "Đã thêm playlist vào yêu thích", "Đã xóa playlist khỏi yêu thích");
+                } else {
+                    Toast.makeText(context, "Playlist ID bị thiếu, không thể yêu thích!", Toast.LENGTH_SHORT).show();
+                }
+            });
 
             itemView.setOnClickListener(v -> {
                 if (listener != null) {
@@ -236,15 +267,15 @@ public class SearchAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         }
     }
 
-
     class AlbumViewHolder extends RecyclerView.ViewHolder {
         private final TextView tvAlbumName;
-        private final ImageView ivAlbumCover;
+        private final ImageView ivAlbumCover, ivFavourite;
 
         public AlbumViewHolder(@NonNull View itemView) {
             super(itemView);
             tvAlbumName = itemView.findViewById(R.id.txt_album_name);
             ivAlbumCover = itemView.findViewById(R.id.img_album);
+            ivFavourite = itemView.findViewById(R.id.icon_favourite_album);
         }
 
         public void bind(Album album) {
@@ -255,6 +286,20 @@ public class SearchAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                     .load(album.getCoverUrl())
                     .placeholder(R.drawable.music)
                     .into(ivAlbumCover);
+
+            String userId = FirebaseAuth.getInstance().getCurrentUser() != null
+                    ? FirebaseAuth.getInstance().getCurrentUser().getEmail().replace(".", "_") : null;
+
+            checkFavoriteStatus(userId, album.getAlbumId(), "Albums", ivFavourite);
+
+            ivFavourite.setOnClickListener(v -> {
+                if (album.getAlbumId() != null && !album.getAlbumId().equals("0")) {
+                    toggleFavorite(userId, album.getAlbumId(), "Albums", ivFavourite,
+                            "Đã thêm album vào yêu thích", "Đã xóa album khỏi yêu thích");
+                } else {
+                    Toast.makeText(context, "Album ID bị thiếu, không thể yêu thích!", Toast.LENGTH_SHORT).show();
+                }
+            });
 
             itemView.setOnClickListener(v -> {
                 if (listener != null) {
@@ -268,15 +313,15 @@ public class SearchAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         }
     }
 
-
     class ArtistViewHolder extends RecyclerView.ViewHolder {
         private final TextView tvArtistName;
-        private final ImageView ivArtistAvatar;
+        private final ImageView ivArtistAvatar, ivFavourite;
 
         public ArtistViewHolder(@NonNull View itemView) {
             super(itemView);
             tvArtistName = itemView.findViewById(R.id.txt_artist_name);
             ivArtistAvatar = itemView.findViewById(R.id.img_artist_avatar);
+            ivFavourite = itemView.findViewById(R.id.icon_favourite_artist); // Assuming you have this ID in artist_item.xml
         }
 
         public void bind(Artist artist) {
@@ -289,6 +334,20 @@ public class SearchAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                     .circleCrop()
                     .into(ivArtistAvatar);
 
+            String userId = FirebaseAuth.getInstance().getCurrentUser() != null
+                    ? FirebaseAuth.getInstance().getCurrentUser().getEmail().replace(".", "_") : null;
+
+            checkFavoriteStatus(userId, artist.getArtistId(), "Artists", ivFavourite);
+
+            ivFavourite.setOnClickListener(v -> {
+                if (artist.getArtistId() != null && !artist.getArtistId().equals("0")) {
+                    toggleFavorite(userId, artist.getArtistId(), "Artists", ivFavourite,
+                            "Đã thêm nghệ sĩ vào yêu thích", "Đã xóa nghệ sĩ khỏi yêu thích");
+                } else {
+                    Toast.makeText(context, "Artist ID bị thiếu, không thể yêu thích!", Toast.LENGTH_SHORT).show();
+                }
+            });
+
             itemView.setOnClickListener(v -> {
                 if (listener != null) {
                     if (artist.getArtistId() == null || artist.getArtistId().equals("0")) {
@@ -300,7 +359,6 @@ public class SearchAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             });
         }
     }
-
 
     public void updateData(List<Song> songs, List<Playlist> playlists, List<Album> albums, List<Artist> artists) {
         List<SearchItem> newItems = new ArrayList<>();

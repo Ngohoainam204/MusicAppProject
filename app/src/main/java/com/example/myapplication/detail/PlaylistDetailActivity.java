@@ -108,8 +108,8 @@ public class PlaylistDetailActivity extends AppCompatActivity {
         playlistId = getIntent().getStringExtra(EXTRA_PLAYLIST_ID);
         String playlistName = getIntent().getStringExtra(EXTRA_PLAYLIST_NAME);
         txtTitle.setText(playlistName != null ? playlistName : "Playlist");
-
-        loadAllSongs(() -> loadPlaylistDetails(playlistId));
+        Log.d("PlaylistDetailActivity", "Playlist ID nhận được từ Intent: " + playlistId);
+        loadPlaylistDetails(playlistId);
 
         btnBack.setOnClickListener(v -> onBackPressed());
         btnShuffle.setOnClickListener(v -> shuffleSongs());
@@ -133,43 +133,28 @@ public class PlaylistDetailActivity extends AppCompatActivity {
 
     }
 
-    private void loadAllSongs(Runnable onLoaded) {
-        databaseRef.child("Songs").addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                allSongs.clear();
-                for (DataSnapshot songSnap : snapshot.getChildren()) {
-                    Song song = songSnap.getValue(Song.class);
-                    if (song != null && song.getSongId() != null) {
-                        allSongs.put(song.getSongId(), song);
-                    }
-                }
-                if (onLoaded != null) onLoaded.run();
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Log.e("PlaylistDetail", "Error loading songs: " + error.getMessage());
-            }
-        });
-    }
-
     private void loadPlaylistDetails(String playlistId) {
         if (playlistId == null) return;
+        Log.d("PlaylistDetailActivity", "Playlist ID: " + playlistId);
+        if (playlistId == null) {
+            Log.e("PlaylistDetailActivity", "Playlist ID is null");
+            return;
+        }
 
-        databaseRef.child("Playlists")
+        databaseRef.child("Playlists").child(playlistId)
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        for (DataSnapshot playlistSnap : snapshot.getChildren()) {
-                            Playlist playlist = playlistSnap.getValue(Playlist.class);
-                            if (playlist != null && playlistId.equals(playlist.getPlaylistId())) {
-                                loadPlaylistSongs(playlist);
-                                checkIfFavorite();
-                                return;
-                            }
+                        if (snapshot.exists()) {
+                            Playlist playlist = snapshot.getValue(Playlist.class);
+                            Log.d("PlaylistDetailActivity", "Playlist ID: " + playlistId);
+
+                            Log.d("PlaylistDetailActivity", "Playlist Name: " + playlist.getPlaylistName());
+                            loadPlaylistSongs(playlist);
+                            checkIfFavorite();
+                        } else {
+                            Toast.makeText(PlaylistDetailActivity.this, "Không tìm thấy playlist", Toast.LENGTH_SHORT).show();
                         }
-                        Toast.makeText(PlaylistDetailActivity.this, "Không tìm thấy playlist", Toast.LENGTH_SHORT).show();
                     }
 
                     @Override
@@ -181,18 +166,49 @@ public class PlaylistDetailActivity extends AppCompatActivity {
     }
 
     private void loadPlaylistSongs(Playlist playlist) {
-        List<SearchItem> newItems = new ArrayList<>();
-        searchItems.clear();
-
-        for (String songId : playlist.getListOfSongIds()) {
-            Song song = allSongs.get(songId);
-            if (song != null) {
-                SearchItem.SongItem item = new SearchItem.SongItem(song);
-                searchItems.add(item);
-                newItems.add(item);
-            }
+        if (playlist == null) {
+            Log.e("PlaylistDetail", "Playlist object is null in loadPlaylistSongs!");
+            return;
         }
-        searchAdapter.updateItems(newItems);
+        if (playlist.getListOfSongIds() == null || playlist.getListOfSongIds().isEmpty()) {
+            Log.d("PlaylistDetail", "Playlist không có bài hát hoặc listOfSongIds là null/empty");
+            return;
+        }
+
+        Log.d("PlaylistDetail", "Bắt đầu tải bài hát từ Firebase cho Playlist ID: " + playlistId);
+        Log.d("PlaylistDetail", "Danh sách Song IDs trong Playlist: " + playlist.getListOfSongIds());
+
+        databaseRef.child("Songs")
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        searchItems.clear();
+                        List<SearchItem> newItems = new ArrayList<>();
+                        Log.d("PlaylistDetail", "Đã tải " + snapshot.getChildrenCount() + " bài hát từ Firebase");
+
+                        for (DataSnapshot songSnap : snapshot.getChildren()) {
+                            Song song = songSnap.getValue(Song.class);
+                            if (song != null) {
+
+                                if (playlist.getListOfSongIds() != null && playlist.getListOfSongIds().contains(song.getSongId())) {
+                                    SearchItem.SongItem item = new SearchItem.SongItem(song);
+                                    searchItems.add(item);
+                                    newItems.add(item);
+                                } else {
+                                    Log.v("PlaylistDetail", "Bài hát " + song.getSongId() + " không thuộc playlist này.");
+                                }
+                            }
+                        }
+
+                        searchAdapter.updateItems(newItems);
+                        Log.d("PlaylistDetail", "Đã cập nhật " + newItems.size() + " bài hát vào RecyclerView (sau updateItems)");
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                        Log.e("PlaylistDetail", "Lỗi khi tải bài hát: " + error.getMessage());
+                    }
+                });
     }
 
     private void shuffleSongs() {

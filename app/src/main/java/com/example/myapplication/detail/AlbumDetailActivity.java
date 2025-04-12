@@ -64,17 +64,21 @@ public class AlbumDetailActivity extends AppCompatActivity {
 
         databaseRef = FirebaseDatabase.getInstance(DB_URL).getReference();
 
+        // Get the data from Intent
         Intent intent = getIntent();
         albumId = intent.getStringExtra(EXTRA_ALBUM_ID);
         String albumName = intent.getStringExtra(EXTRA_ALBUM_NAME);
         String albumCover = intent.getStringExtra(EXTRA_ALBUM_COVER);
 
+        // Display the album information
         txtTitle.setText(albumName != null ? albumName : "Album");
         if (albumCover != null) {
             Glide.with(this).load(albumCover).into(imgAlbumCover);
         }
 
         Log.d("AlbumDetail", "albumId received: " + albumId);
+
+        // Load all songs and then the album's songs
         loadAllSongs(() -> loadAlbumSongs(albumId));
     }
 

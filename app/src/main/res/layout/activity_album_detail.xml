@@ -66,8 +66,7 @@
             android:layout_width="36dp"
             android:layout_height="36dp"
             android:padding="6dp"
-            android:src="@drawable/ic_heart_selection"
-            app:tint="@color/black" />
+            android:src="@drawable/ic_heart_selection" />
 
         <ImageView
             android:id="@+id/btn_download"

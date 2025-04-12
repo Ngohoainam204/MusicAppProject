@@ -1,11 +1,11 @@
-package com.example.myapplication;
+package com.example.myapplication.main;
 
 import android.content.Context;
+
 import com.bumptech.glide.annotation.GlideModule;
 import com.bumptech.glide.module.AppGlideModule;
-import com.bumptech.glide.Glide;
 import com.bumptech.glide.GlideBuilder;
-import com.bumptech.glide.request.RequestOptions;
+
 import android.util.Log;
 
 @GlideModule

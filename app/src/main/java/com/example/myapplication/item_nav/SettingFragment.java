@@ -13,10 +13,10 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.example.myapplication.ChangePasswordActivity;
-import com.example.myapplication.LoginFragment;
+import com.example.myapplication.login_register.ChangePasswordActivity;
+import com.example.myapplication.login_register.LoginFragment;
 import com.example.myapplication.R;
-import com.example.myapplication.RegisterLoginActivity;
+import com.example.myapplication.login_register.RegisterLoginActivity;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -31,7 +31,8 @@ public class SettingFragment extends Fragment {
     private Button btnAddAccount, btnLogout, btnChangepw;
     private TextView tvUsername;
 
-    public SettingFragment() {}
+    public SettingFragment() {
+    }
 
     @Nullable
     @Override
@@ -68,7 +69,8 @@ public class SettingFragment extends Fragment {
                 }
 
                 @Override
-                public void onCancelled(@NonNull DatabaseError error) {}
+                public void onCancelled(@NonNull DatabaseError error) {
+                }
             });
 
             // Hiển thị username

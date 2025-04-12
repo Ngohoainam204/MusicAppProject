@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <application
-        android:name=".MyApplication"
+        android:name=".main.MyApplication"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:enableOnBackInvokedCallback="true"
@@ -19,7 +19,7 @@
 
         <!-- SplashActivity là màn hình khởi động -->
         <activity
-            android:name=".SplashActivity"
+            android:name=".login_register.SplashActivity"
             android:exported="true"
             android:theme="@style/Theme.MyApplication">
             <intent-filter>
@@ -32,19 +32,19 @@
         <activity android:name=".detail.ArtistDetailActivity" />
 
         <activity
-            android:name=".RegisterLoginActivity"
+            android:name=".login_register.RegisterLoginActivity"
             android:exported="true"
             android:theme="@style/Theme.MyApplication" />
 
         <activity android:name=".detail.PlaylistDetailActivity" />
 
         <activity
-            android:name=".ChangePasswordActivity"
+            android:name=".login_register.ChangePasswordActivity"
             android:exported="true"
             android:theme="@style/Theme.MyApplication" />
 
         <activity
-            android:name=".MainActivity"
+            android:name=".main.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />

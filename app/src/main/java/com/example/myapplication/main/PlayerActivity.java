@@ -1,9 +1,11 @@
-package com.example.myapplication;
+package com.example.myapplication.main;
 
 import android.media.MediaPlayer;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.myapplication.R;
 
 import java.io.IOException;
 

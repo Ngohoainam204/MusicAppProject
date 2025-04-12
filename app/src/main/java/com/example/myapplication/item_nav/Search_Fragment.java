@@ -73,15 +73,18 @@ public class Search_Fragment extends Fragment {
                 }
             }
 
-
             @Override
             public void onPlaylistClick(Playlist playlist) {
                 if (getContext() != null) {
                     Intent intent = new Intent(getContext(), PlaylistDetailActivity.class);
-                    intent.putExtra("playlist_id", playlist.getPlaylistId());
+                    intent.putExtra(PlaylistDetailActivity.EXTRA_PLAYLIST_ID, playlist.getPlaylistId());  // Chỉnh sửa để sử dụng EXTRA_PLAYLIST_ID
+                    Log.d("SearchAdapter", "Click playlist: " + playlist.getPlaylistName());
+                    Log.d("SearchAdapter", "Playlist ID: " + playlist.getPlaylistId());
+
                     startActivity(intent);
                 }
             }
+
 
             @Override
             public void onAlbumClick(Album album) {
@@ -130,6 +133,7 @@ public class Search_Fragment extends Fragment {
     private void loadAllData() {
         DatabaseReference db = FirebaseDatabase.getInstance(DB_URL).getReference();
 
+        // Load Songs
         db.child("Songs").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -151,6 +155,7 @@ public class Search_Fragment extends Fragment {
             }
         });
 
+        // Load Playlists
         db.child("Playlists").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -174,7 +179,7 @@ public class Search_Fragment extends Fragment {
             }
         });
 
-
+        // Load Albums
         db.child("Albums").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -196,6 +201,7 @@ public class Search_Fragment extends Fragment {
             }
         });
 
+        // Load Artists
         db.child("Artists").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {

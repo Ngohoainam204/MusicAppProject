@@ -59,7 +59,7 @@
         </LinearLayout>
 
         <ImageView
-            android:id="@+id/icon_artist_favourite"
+            android:id="@+id/icon_favourite_artist"
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_marginStart="12dp"

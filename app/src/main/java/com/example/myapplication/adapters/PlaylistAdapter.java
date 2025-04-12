@@ -79,11 +79,14 @@ public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.Playli
         });
 
         holder.itemView.setOnClickListener(v -> {
+            Log.d("PlaylistAdapter", "Sending playlistId: " + playlist.getId());
+            Log.d("PlaylistAdapter", "Sending playlistName: " + playlist.getPlaylistName());
             Intent intent = new Intent(context, PlaylistDetailActivity.class);
-            intent.putExtra("playlist_id", playlist.getId());
-            intent.putExtra("playlist_name", playlist.getPlaylistName());
+            intent.putExtra(PlaylistDetailActivity.EXTRA_PLAYLIST_ID, playlist.getId());
+            intent.putExtra(PlaylistDetailActivity.EXTRA_PLAYLIST_NAME, playlist.getPlaylistName());
             context.startActivity(intent);
         });
+
     }
 
     @Override
@@ -127,7 +130,7 @@ public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.Playli
             super(itemView);
             ivCover = itemView.findViewById(R.id.img_playlist);
             tvTitle = itemView.findViewById(R.id.txt_playlist_name);
-            btnFavourite = itemView.findViewById(R.id.icon_favourite);
+            btnFavourite = itemView.findViewById(R.id.icon_favourite_playlist);
         }
     }
 }

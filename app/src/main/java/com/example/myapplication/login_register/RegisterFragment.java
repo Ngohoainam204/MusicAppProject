@@ -1,4 +1,4 @@
-package com.example.myapplication;
+package com.example.myapplication.login_register;
 
 import android.os.Bundle;
 import android.text.InputType;
@@ -15,12 +15,13 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.example.myapplication.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 public class RegisterFragment extends Fragment {
 
-    private EditText  edtEmail, edtPassword, edtRePassword;
+    private EditText edtEmail, edtPassword, edtRePassword;
     private ImageView togglePassword, toggleRePassword;
     private Button btnRegister;
     private TextView btnLoginNow;
