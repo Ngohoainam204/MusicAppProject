@@ -28,7 +28,7 @@ import java.util.Map;
 
 public class SettingFragment extends Fragment {
 
-    private Button btnAddAccount, btnLogout, btnChangepw;
+    private Button btnLogout, btnChangepw;
     private TextView tvUsername;
 
     public SettingFragment() {
@@ -44,7 +44,6 @@ public class SettingFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        btnAddAccount = view.findViewById(R.id.btnAddAccount);
         btnLogout = view.findViewById(R.id.btnLogout);
         btnChangepw = view.findViewById(R.id.btnChangePassword);
         tvUsername = view.findViewById(R.id.tvUsername);
@@ -110,13 +109,6 @@ public class SettingFragment extends Fragment {
             });
         }
 
-        // Thêm tài khoản khác
-        btnAddAccount.setOnClickListener(v -> {
-            getParentFragmentManager().beginTransaction()
-                    .replace(R.id.fragment_container, new LoginFragment())
-                    .addToBackStack(null)
-                    .commit();
-        });
 
         // Đăng xuất
         btnLogout.setOnClickListener(v -> {
