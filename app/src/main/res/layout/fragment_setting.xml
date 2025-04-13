@@ -43,19 +43,6 @@
         android:orientation="vertical"
         android:gravity="center_horizontal">
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnAddAccount"
-            android:layout_width="220dp"
-            android:layout_height="48dp"
-            android:text="Add new account"
-            android:textColor="#000000"
-            android:backgroundTint="#E0E0E0"
-            app:icon="@drawable/add"
-            app:iconPadding="8dp"
-            app:iconGravity="start"
-            app:iconTint="@android:color/black"
-            app:iconSize="20dp"
-            android:layout_marginBottom="16dp" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnChangePassword"
