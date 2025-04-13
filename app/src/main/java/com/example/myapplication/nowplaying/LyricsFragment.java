@@ -3,6 +3,7 @@ package com.example.myapplication.nowplaying;
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +24,10 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.URL;
 import java.util.concurrent.TimeUnit;
 
 public class LyricsFragment extends Fragment {
@@ -42,7 +47,6 @@ public class LyricsFragment extends Fragment {
     private NowPlayingActivity nowPlayingActivity;
     private final Handler handler = new Handler();
 
-    // Firebase references
     private FirebaseDatabase database;
     private DatabaseReference lyricsRef;
 
@@ -50,9 +54,8 @@ public class LyricsFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         nowPlayingActivity = (NowPlayingActivity) getActivity();
-        // Initialize Firebase Database reference
         database = FirebaseDatabase.getInstance();
-        lyricsRef = database.getReference("songs"); // Refer to songs node in Firebase
+        lyricsRef = database.getReference("Songs");
     }
 
     @Nullable
@@ -88,8 +91,7 @@ public class LyricsFragment extends Fragment {
             tvArtist.setText(nowPlayingActivity.tvArtist.getText());
             tvCurrentTime.setText(nowPlayingActivity.tvCurrentTime.getText());
             tvDuration.setText(nowPlayingActivity.tvDuration.getText());
-            tvLyricsContent.setText(nowPlayingActivity.SongLyrics);
-            // Chỉ load background từ NowPlayingActivity
+
             Glide.with(this)
                     .load(nowPlayingActivity.imgCover.getDrawable())
                     .into(imgLyricsBackground);
@@ -99,28 +101,33 @@ public class LyricsFragment extends Fragment {
                 seekBar.setProgress((int) nowPlayingActivity.exoPlayer.getCurrentPosition());
                 updatePlayPauseButton();
             }
+            Log.d("LyricsFragment", "currentSongId: " + nowPlayingActivity.currentSongId);
 
-            // Load lyrics từ Firebase
-            loadLyricsFromFirebase(nowPlayingActivity.currentSongId);  // currentSongId là ID bài hát hiện tại
+            loadLyricsFromFirebase(nowPlayingActivity.currentSongId);
         }
     }
 
     private void loadLyricsFromFirebase(String songId) {
-        // Kiểm tra nếu songId là null
+        Log.d("LyricsFragment", "Song ID: " + songId);
+
         if (songId == null || songId.isEmpty()) {
             Toast.makeText(getContext(), "Song ID không hợp lệ", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        // Lấy dữ liệu lyrics từ Firebase
         lyricsRef.child(songId).addListenerForSingleValueEvent(new ValueEventListener() {
+
+
             @SuppressLint("SetTextI18n")
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
-                    String lyrics = dataSnapshot.child("lyrics").getValue(String.class);
-                    if (lyrics != null) {
-                        tvLyricsContent.setText(lyrics);
+                    String lyricsUrl = dataSnapshot.child("lyrics").getValue(String.class);
+                    Log.d("LyricsFragment", "Lyrics URL: " + lyricsUrl);
+
+
+                    if (lyricsUrl != null && !lyricsUrl.isEmpty()) {
+                        fetchLyricsFromCloudinary(lyricsUrl);
                     } else {
                         tvLyricsContent.setText("Lyrics not available.");
                     }
@@ -129,10 +136,41 @@ public class LyricsFragment extends Fragment {
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-                // Handle error (e.g., show a Toast)
                 Toast.makeText(getContext(), "Failed to load lyrics.", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    private void fetchLyricsFromCloudinary(String urlString) {
+        Log.d("LyricsFragment", "Fetching lyrics from URL: " + urlString);
+
+        new Thread(() -> {
+            try {
+                URL url = new URL(urlString);
+                BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()));
+
+                StringBuilder lyrics = new StringBuilder();
+                String inputLine;
+                while ((inputLine = in.readLine()) != null) {
+                    lyrics.append(inputLine).append("\n");
+                }
+                in.close();
+
+                if (getActivity() != null) {
+                    requireActivity().runOnUiThread(() -> tvLyricsContent.setText(lyrics.toString()));
+                }
+
+            } catch (IOException e) {
+                Log.e("LyricsFragment", "Failed to fetch lyrics: " + e.getMessage());
+
+                e.printStackTrace();
+                if (getActivity() != null) {
+                    requireActivity().runOnUiThread(() ->
+                            tvLyricsContent.setText("Không thể tải lời bài hát từ Cloudinary.")
+                    );
+                }
+            }
+        }).start();
     }
 
     private void setupListeners() {
@@ -144,11 +182,17 @@ public class LyricsFragment extends Fragment {
         });
 
         btnPrevious.setOnClickListener(v -> {
-            // TODO: Thêm chức năng previous song
+            if (nowPlayingActivity != null) {
+                nowPlayingActivity.playPreviousSong();
+                updateUIFromNowPlayingActivity();
+            }
         });
 
         btnNext.setOnClickListener(v -> {
-            // TODO: Thêm chức năng next song
+            if (nowPlayingActivity != null) {
+                nowPlayingActivity.playNextSong();
+                updateUIFromNowPlayingActivity();
+            }
         });
 
         btnBack.setOnClickListener(v -> {
@@ -175,7 +219,7 @@ public class LyricsFragment extends Fragment {
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
                 if (nowPlayingActivity != null && nowPlayingActivity.exoPlayer != null) {
-                    nowPlayingActivity.exoPlayer.seekTo(seekBar.getProgress());
+                    nowPlayingActivity.exoPlayer.seekTo((long) seekBar.getProgress());
                     nowPlayingActivity.isSeeking = false;
                 }
             }

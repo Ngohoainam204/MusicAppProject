@@ -44,7 +44,7 @@
         app:layout_constraintBottom_toBottomOf="@id/imgAvatar"
         app:layout_constraintTop_toTopOf="@id/imgAvatar" />
 
-    <!-- Search bar (ẩn ban đầu) -->
+    <!-- Search bar (ẩn ban đầu, hiện khi click btnSearchIcon) -->
     <LinearLayout
         android:id="@+id/searchBar"
         android:layout_width="0dp"
@@ -64,13 +64,17 @@
             android:layout_height="24dp"
             android:src="@drawable/ic_search" />
 
-        <TextView
-            android:id="@+id/tvSearchHint"
-            android:layout_width="wrap_content"
+        <EditText
+            android:id="@+id/etSearch"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="Tìm Bài Hát"
-            android:textColor="#888"
-            android:layout_marginStart="8dp" />
+            android:layout_weight="1"
+            android:background="@android:color/transparent"
+            android:hint="Tìm Bài Hát"
+            android:textColor="#000"
+            android:textColorHint="#888"
+            android:paddingStart="8dp"
+            android:inputType="text" />
     </LinearLayout>
 
     <!-- Title -->

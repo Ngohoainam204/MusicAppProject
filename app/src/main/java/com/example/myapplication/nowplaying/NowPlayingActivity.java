@@ -145,13 +145,13 @@ public class NowPlayingActivity extends AppCompatActivity {
         return -1;
     }
 
-    private void playNextSong() {
+    void playNextSong() {
         if (songList.isEmpty() || currentSongIndex == -1) return;
         currentSongIndex = (currentSongIndex + 1) % songList.size();
         playSongAtIndex(currentSongIndex);
     }
 
-    private void playPreviousSong() {
+    void playPreviousSong() {
         if (songList.isEmpty() || currentSongIndex == -1) return;
         currentSongIndex = (currentSongIndex - 1 + songList.size()) % songList.size();
         playSongAtIndex(currentSongIndex);

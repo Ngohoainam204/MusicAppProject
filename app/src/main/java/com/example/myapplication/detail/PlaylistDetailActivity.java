@@ -175,8 +175,6 @@ public class PlaylistDetailActivity extends AppCompatActivity {
             return;
         }
 
-        Log.d("PlaylistDetail", "Bắt đầu tải bài hát từ Firebase cho Playlist ID: " + playlistId);
-        Log.d("PlaylistDetail", "Danh sách Song IDs trong Playlist: " + playlist.getListOfSongIds());
 
         databaseRef.child("Songs")
                 .addListenerForSingleValueEvent(new ValueEventListener() {
@@ -195,7 +193,6 @@ public class PlaylistDetailActivity extends AppCompatActivity {
                                     searchItems.add(item);
                                     newItems.add(item);
                                 } else {
-                                    Log.v("PlaylistDetail", "Bài hát " + song.getSongId() + " không thuộc playlist này.");
                                 }
                             }
                         }
