@@ -16,11 +16,8 @@ import com.bumptech.glide.Glide;
 import com.example.myapplication.R;
 import com.example.myapplication.models.Song;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.database.DataSnapshot;
 
 import java.util.List;
 
@@ -30,6 +27,11 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.SongViewHolder
     private List<Song> songs; // Changed to non-final for updateability
     private static final String FIREBASE_DB_URL = "https://musicplayerapp-aed33-default-rtdb.asia-southeast1.firebasedatabase.app";
     private static final String TAG = "SongAdapter";
+    private OnSongClickListener listener;
+
+    public interface OnSongClickListener {
+        void onSongClick(Song song, int position);
+    }
 
     public SongAdapter(Context context, List<Song> songs) {
         this.context = context;
@@ -39,6 +41,10 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.SongViewHolder
     public void updateSongs(List<Song> newSongs) {
         this.songs = newSongs;
         notifyDataSetChanged();
+    }
+
+    public void setOnSongClickListener(OnSongClickListener listener) {
+        this.listener = listener;
     }
 
     @NonNull
@@ -73,6 +79,15 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.SongViewHolder
 
         holder.ivFavourite.setOnClickListener(v -> {
             handleFavoriteClick(holder, song);
+        });
+
+        holder.itemView.setOnClickListener(v -> {
+            if (listener != null) {
+                int adapterPosition = holder.getAdapterPosition();
+                if (adapterPosition != RecyclerView.NO_POSITION) {
+                    listener.onSongClick(songs.get(adapterPosition), adapterPosition);
+                }
+            }
         });
     }
 
@@ -140,4 +155,3 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.SongViewHolder
         }
     }
 }
-

@@ -1,6 +1,7 @@
 package com.example.myapplication.main;
 
 import android.os.Bundle;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -11,10 +12,12 @@ import com.example.myapplication.item_nav.Search_Fragment;
 import com.example.myapplication.item_nav.LibraryFragment;
 import com.example.myapplication.item_nav.HomeFragment;
 import com.example.myapplication.item_nav.SettingFragment;
+import com.example.myapplication.library.FavouriteSongsFragment; // Import FavouriteSongsFragment
+import com.example.myapplication.models.Song;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements FavouriteSongsFragment.OnSongPlayClickListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,5 +54,13 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             }
         });
+    }
+
+    @Override
+    public void onSongPlayClicked(Song song) {
+        // Logic để phát bài hát 'song' khi nó được click từ FavouriteSongsFragment
+        Log.d("MainActivity", "Play song from Favourite: " + song.getTitle() + ", URL: " + song.getFileUrl());
+        // TODO: Thực hiện logic phát nhạc ở đây.
+        // Ví dụ: Gọi một service phát nhạc và truyền URL của bài hát.
     }
 }
